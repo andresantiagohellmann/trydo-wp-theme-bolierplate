@@ -51,7 +51,8 @@ src/
 ├── resources/
 │   ├── scripts/          # Global JavaScript
 │   │   ├── main.js       # Front-end entry
-│   │   └── editor.js     # Editor entry
+│   │   ├── editor.js     # Editor entry
+│   │   └── vendors.js    # External libraries (GSAP, etc.)
 │   └── styles/           # Global CSS
 │       ├── main.css      # Main Tailwind import
 │       └── editor.css    # Editor styles
@@ -126,6 +127,63 @@ This theme uses a specific CSS Cascade Layers strategy:
 	@apply rounded-lg bg-white p-8;
 }
 ```
+
+## 📦 External Libraries (Vendors Bundle)
+
+This theme uses a **vendors bundle** system to manage external libraries like GSAP, preventing code duplication across blocks.
+
+### Adding a New Library
+
+**1. Install via pnpm:**
+
+```bash
+pnpm add gsap
+# or any other library
+pnpm add embla-carousel
+```
+
+**2. Import in `src/resources/scripts/vendors.js`:**
+
+```javascript
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
+window.ThemeVendors = {
+	gsap,
+	ScrollTrigger,
+};
+
+export { gsap, ScrollTrigger };
+```
+
+**3. Use in your blocks:**
+
+```javascript
+// src/blocks/my-block/view.js
+const { gsap } = window.ThemeVendors;
+
+document.addEventListener('DOMContentLoaded', () => {
+	gsap.to('.my-element', {
+		opacity: 1,
+		duration: 1,
+	});
+});
+```
+
+### Benefits
+
+- ✅ **Zero duplication** - Libraries loaded once, shared across all blocks
+- ✅ **Simple workflow** - Just `pnpm add` and import in vendors.js
+- ✅ **Performance** - Browser caches vendors bundle separately
+- ✅ **HMR support** - Hot reload works in development
+
+### Currently Included
+
+- **GSAP** - Animation library with ScrollTrigger plugin
+
+See the boilerplate block for a working example with GSAP animations!
 
 ## 🔧 Code Quality Tools
 
