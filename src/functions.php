@@ -3,11 +3,14 @@
  * Theme bootstrap file responsible for integrating Vite.
  */
 
-const TESTE_VITE_ENTRY = 'src/assets/main.js';
+const TESTE_VITE_THEME_ENTRY = 'src/assets/main.js';
+const TESTE_VITE_BLOCK_EDITOR_ENTRY = 'src/blocks/index.js';
 
 add_action('wp_enqueue_scripts', 'teste_enqueue_theme_assets');
 add_action('enqueue_block_assets', 'teste_enqueue_theme_assets');
 add_action('enqueue_block_editor_assets', 'teste_enqueue_theme_assets');
+add_action('enqueue_block_editor_assets', 'teste_enqueue_block_editor_assets');
+add_action('init', 'teste_register_blocks');
 add_filter('script_loader_tag', 'teste_vite_force_module_type', 10, 3);
 
 /**
@@ -23,48 +26,83 @@ function teste_enqueue_theme_assets(): void
 
     $enqueued = true;
 
-    $dev_origin = teste_vite_dev_server_origin();
+    teste_vite_enqueue_entry(TESTE_VITE_THEME_ENTRY, 'teste-theme');
+}
 
-    if ($dev_origin) {
-        teste_enqueue_vite_dev_assets($dev_origin);
+/**
+ * Loads the Vite block editor bundle ensuring Tailwind styles are present in the editor.
+ */
+function teste_enqueue_block_editor_assets(): void
+{
+    static $enqueued = false;
+
+    if ($enqueued) {
+        return;
+    }
+
+    $enqueued = true;
+
+    $dependencies = [
+        'wp-blocks',
+        'wp-element',
+        'wp-i18n',
+        'wp-block-editor',
+        'wp-components',
+    ];
+
+    teste_vite_enqueue_entry(TESTE_VITE_BLOCK_EDITOR_ENTRY, 'teste-blocks-editor', $dependencies);
+}
+
+/**
+ * Enqueues a Vite entry point and its dependencies.
+ */
+function teste_vite_enqueue_entry(string $entry, string $handle, array $deps = []): void
+{
+    $origin = teste_vite_dev_server_origin();
+
+    if ($origin) {
+        teste_vite_enqueue_dev_entry($origin, $entry, $handle, $deps);
         return;
     }
 
     $manifest = teste_vite_manifest();
 
     if (! $manifest) {
-        error_log('[teste theme] Vite manifest not found. Did you run "pnpm build"?');
+        error_log(sprintf('[teste theme] Manifest not found while trying to enqueue "%s". Run "pnpm build".', $entry));
         return;
     }
 
-    teste_enqueue_vite_built_assets($manifest);
+    teste_vite_enqueue_from_manifest($entry, $manifest, $handle, $deps);
 }
 
 /**
- * Enqueue assets when the Vite dev server is running.
+ * Enqueues a dev server entry, ensuring the Vite client is only loaded once.
  */
-function teste_enqueue_vite_dev_assets(string $origin): void
+function teste_vite_enqueue_dev_entry(string $origin, string $entry, string $handle, array $deps = []): void
 {
+    teste_vite_enqueue_client($origin);
+
+    wp_enqueue_script($handle, "{$origin}/{$entry}", $deps, null, true);
+    teste_vite_mark_module_script($handle);
+}
+
+/**
+ * Enqueues the Vite HMR client when the dev server is active.
+ */
+function teste_vite_enqueue_client(string $origin): void
+{
+    static $client_enqueued = false;
+
+    if ($client_enqueued) {
+        return;
+    }
+
     $client_handle = 'teste-vite-client';
-    $entry_handle = 'teste-vite-entry';
 
     wp_enqueue_script($client_handle, "{$origin}/@vite/client", [], null, true);
     teste_vite_mark_module_script($client_handle);
 
-    $entry = TESTE_VITE_ENTRY;
-
-    wp_enqueue_script($entry_handle, "{$origin}/{$entry}", [], null, true);
-    teste_vite_mark_module_script($entry_handle);
-}
-
-/**
- * Enqueue assets produced by Vite build using the manifest file.
- *
- * @param array<string,mixed> $manifest
- */
-function teste_enqueue_vite_built_assets(array $manifest): void
-{
-    teste_vite_enqueue_from_manifest(TESTE_VITE_ENTRY, $manifest);
+    $client_enqueued = true;
 }
 
 /**
@@ -72,7 +110,7 @@ function teste_enqueue_vite_built_assets(array $manifest): void
  *
  * @param array<string,mixed> $manifest
  */
-function teste_vite_enqueue_from_manifest(string $entry, array $manifest): void
+function teste_vite_enqueue_from_manifest(string $entry, array $manifest, ?string $script_handle = null, array $deps = []): void
 {
     static $scripts = [];
     static $styles = [];
@@ -103,9 +141,11 @@ function teste_vite_enqueue_from_manifest(string $entry, array $manifest): void
         return;
     }
 
-    $handle = 'teste-script-' . md5($item['file']);
+    $handle = $script_handle ?? 'teste-script-' . md5($item['file']);
 
-    wp_enqueue_script($handle, teste_vite_dist_url($item['file']), [], null, true);
+    $script_deps = $script_handle ? $deps : [];
+
+    wp_enqueue_script($handle, teste_vite_dist_url($item['file']), $script_deps, null, true);
     teste_vite_mark_module_script($handle);
 
     $scripts[$item['file']] = true;
@@ -215,6 +255,14 @@ function teste_theme_project_root_path(): string
 }
 
 /**
+ * Resolves the absolute path to the active theme source directory.
+ */
+function teste_theme_src_path(): string
+{
+    return teste_theme_project_root_path() . '/src';
+}
+
+/**
  * Resolves the public URI to the theme project root.
  */
 function teste_theme_project_root_uri(): string
@@ -236,6 +284,43 @@ function teste_vite_dist_url(string $asset): string
     $asset = ltrim($asset, '/');
 
     return teste_theme_project_root_uri() . '/dist/' . $asset;
+}
+
+/**
+ * Registers all custom blocks located under src/blocks.
+ */
+function teste_register_blocks(): void
+{
+    $blocks_dir = teste_theme_src_path() . '/blocks';
+
+    if (! is_dir($blocks_dir)) {
+        return;
+    }
+
+    $block_json_files = glob($blocks_dir . '/*/block.json');
+
+    if (! $block_json_files) {
+        return;
+    }
+
+    foreach ($block_json_files as $block_json) {
+        $block_dir = dirname($block_json);
+        $render_path = $block_dir . '/render.php';
+
+        $args = [];
+
+        if (file_exists($render_path)) {
+            $args['render_callback'] = static function (array $attributes, string $content, \WP_Block $block) use ($render_path) {
+                return require $render_path;
+            };
+        }
+
+        $result = register_block_type_from_metadata($block_dir, $args);
+
+        if (is_wp_error($result)) {
+            error_log(sprintf('[teste theme] Failed to register block from %s: %s', $block_dir, $result->get_error_message()));
+        }
+    }
 }
 
 /**

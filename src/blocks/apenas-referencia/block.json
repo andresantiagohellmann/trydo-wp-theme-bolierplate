@@ -1,0 +1,41 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "version": "0.1.0",
+  "name": "teste/apenas-referencia",
+  "title": "Apenas Referência",
+  "category": "widgets",
+  "icon": "index-card",
+  "description": "Card destacado com título, descrição e link usando o design base do tema.",
+  "keywords": [
+    "card",
+    "cta",
+    "tailwind"
+  ],
+  "supports": {
+    "html": false,
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Título do bloco"
+    },
+    "description": {
+      "type": "string",
+      "default": "Use este bloco para destacar uma mensagem importante com o mesmo visual do tema."
+    },
+    "linkLabel": {
+      "type": "string",
+      "default": "Saiba mais"
+    },
+    "linkUrl": {
+      "type": "string",
+      "default": "#"
+    }
+  },
+  "render": "file:./render.php"
+}
