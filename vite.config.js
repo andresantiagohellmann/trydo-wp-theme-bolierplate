@@ -6,6 +6,7 @@ const themeRoot = path.resolve(__dirname, 'src');
 const inputFiles = {
   main: path.resolve(themeRoot, 'assets/main.js'),
   blocks: path.resolve(themeRoot, 'blocks/index.js'),
+  editor: path.resolve(themeRoot, 'assets/editor.js'),
 };
 const host = process.env.WP_VITE_HOST || '127.0.0.1';
 const port = Number(process.env.WP_VITE_PORT || 5173);

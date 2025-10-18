@@ -5,12 +5,15 @@
 
 const TESTE_VITE_THEME_ENTRY = 'src/assets/main.js';
 const TESTE_VITE_BLOCK_EDITOR_ENTRY = 'src/blocks/index.js';
+const TESTE_VITE_EDITOR_ENTRY = 'src/assets/editor.js';
 
 add_action('wp_enqueue_scripts', 'teste_enqueue_theme_assets');
 add_action('enqueue_block_assets', 'teste_enqueue_theme_assets');
 add_action('enqueue_block_editor_assets', 'teste_enqueue_theme_assets');
 add_action('enqueue_block_editor_assets', 'teste_enqueue_block_editor_assets');
 add_action('init', 'teste_register_blocks');
+add_action('after_setup_theme', 'teste_setup_theme_support');
+add_action('init', 'teste_setup_editor_styles');
 add_filter('script_loader_tag', 'teste_vite_force_module_type', 10, 3);
 
 /**
@@ -50,29 +53,38 @@ function teste_enqueue_block_editor_assets(): void
         'wp-components',
     ];
 
-    teste_vite_enqueue_entry(TESTE_VITE_BLOCK_EDITOR_ENTRY, 'teste-blocks-editor', $dependencies);
+    $origin = teste_vite_enqueue_entry(TESTE_VITE_BLOCK_EDITOR_ENTRY, 'teste-blocks-editor', $dependencies);
+
+    teste_vite_enqueue_entry(
+        TESTE_VITE_EDITOR_ENTRY,
+        'teste-editor-entry',
+        [],
+        $origin
+    );
 }
 
 /**
  * Enqueues a Vite entry point and its dependencies.
  */
-function teste_vite_enqueue_entry(string $entry, string $handle, array $deps = []): void
+function teste_vite_enqueue_entry(string $entry, string $handle, array $deps = [], ?string $origin = null): ?string
 {
-    $origin = teste_vite_dev_server_origin();
+    $origin = $origin ?? teste_vite_dev_server_origin();
 
     if ($origin) {
         teste_vite_enqueue_dev_entry($origin, $entry, $handle, $deps);
-        return;
+        return $origin;
     }
 
     $manifest = teste_vite_manifest();
 
     if (! $manifest) {
         error_log(sprintf('[teste theme] Manifest not found while trying to enqueue "%s". Run "pnpm build".', $entry));
-        return;
+        return null;
     }
 
     teste_vite_enqueue_from_manifest($entry, $manifest, $handle, $deps);
+
+    return null;
 }
 
 /**
@@ -104,7 +116,6 @@ function teste_vite_enqueue_client(string $origin): void
 
     $client_enqueued = true;
 }
-
 /**
  * Recursively enqueue scripts and styles defined in the Vite manifest.
  *
@@ -170,7 +181,7 @@ function teste_vite_dev_server_origin(): ?string
         return null;
     }
 
-    if (apply_filters('teste_vite_skip_dev_server_check', false)) {
+    if (teste_vite_should_skip_dev_check()) {
         return $origin;
     }
 
@@ -196,10 +207,46 @@ function teste_vite_is_dev_server_running(string $origin): bool
         ]
     );
 
-    $cache[$origin] = ! is_wp_error($response)
+    $success = ! is_wp_error($response)
         && 200 === (int) wp_remote_retrieve_response_code($response);
 
+    if (! $success) {
+        $success = teste_vite_can_connect_to_origin($origin);
+    }
+
+    $cache[$origin] = $success;
+
     return $cache[$origin];
+}
+
+/**
+ * Attempts a low-level socket connection to determine if the dev server is reachable.
+ */
+function teste_vite_can_connect_to_origin(string $origin): bool
+{
+    $parsed = wp_parse_url($origin);
+
+    if (empty($parsed['host'])) {
+        return false;
+    }
+
+    $scheme = $parsed['scheme'] ?? 'http';
+    $port = $parsed['port'] ?? ('https' === $scheme ? 443 : 80);
+    $transport = 'https' === $scheme ? 'ssl://' : 'tcp://';
+
+    $socket = @stream_socket_client(
+        "{$transport}{$parsed['host']}:{$port}",
+        $errno,
+        $errstr,
+        0.3
+    );
+
+    if ($socket) {
+        fclose($socket);
+        return true;
+    }
+
+    return false;
 }
 
 /**
@@ -324,6 +371,77 @@ function teste_register_blocks(): void
 }
 
 /**
+ * Declares theme supports required for proper editor integration.
+ */
+function teste_setup_theme_support(): void
+{
+    add_theme_support('editor-styles');
+}
+
+/**
+ * Resolves the list of CSS URLs that must be loaded inside the block editor.
+ *
+ * @return string[]
+ */
+function teste_vite_resolve_editor_style_urls(): array
+{
+    $styles = [];
+
+    $origin = teste_vite_dev_server_origin();
+
+    if ($origin) {
+        $styles[] = "{$origin}/src/assets/main.css";
+        $styles[] = "{$origin}/src/assets/editor.css";
+
+        return array_values(array_unique($styles));
+    }
+
+    $manifest = teste_vite_manifest();
+
+    if (! $manifest) {
+        return [];
+    }
+
+    $entries = [
+        'src/assets/main.js',
+        'src/blocks/index.js',
+        'src/assets/editor.js',
+    ];
+
+    foreach ($entries as $entry) {
+        if (empty($manifest[$entry]['css'])) {
+            continue;
+        }
+
+        foreach ($manifest[$entry]['css'] as $css) {
+            $styles[] = teste_vite_dist_url($css);
+        }
+
+        if (! empty($manifest[$entry]['file']) && teste_vite_asset_is_css((string) $manifest[$entry]['file'])) {
+            $styles[] = teste_vite_dist_url($manifest[$entry]['file']);
+        }
+    }
+
+    return array_values(array_unique($styles));
+}
+
+/**
+ * Registers a filter to append editor styles dynamically on each request.
+ */
+function teste_setup_editor_styles(): void
+{
+    $styles = teste_vite_resolve_editor_style_urls();
+
+    if (! $styles) {
+        return;
+    }
+
+    foreach ($styles as $style) {
+        add_editor_style($style);
+    }
+}
+
+/**
  * Ensures the provided script handle is printed with type="module".
  */
 function teste_vite_mark_module_script(string $handle): void
@@ -351,4 +469,46 @@ function teste_vite_force_module_type(string $tag, string $handle, string $src):
     }
 
     return str_replace('<script', '<script type="module"', $tag);
+}
+
+/**
+ * Determines whether the given asset path points to a CSS file.
+ */
+function teste_vite_asset_is_css(string $asset): bool
+{
+    return substr($asset, -4) === '.css';
+}
+
+/**
+ * Determines whether the dev server availability check should be skipped.
+ */
+function teste_vite_should_skip_dev_check(): bool
+{
+    if (apply_filters('teste_vite_skip_dev_server_check', false)) {
+        return true;
+    }
+
+    if (defined('TESTE_VITE_SKIP_DEV_CHECK') && TESTE_VITE_SKIP_DEV_CHECK) {
+        return true;
+    }
+
+    $env = getenv('WP_VITE_SKIP_CHECK');
+
+    if (false !== $env) {
+        $normalized = strtolower(trim((string) $env));
+
+        if (in_array($normalized, ['1', 'true', 'yes', 'on'], true)) {
+            return true;
+        }
+    }
+
+    if (defined('WP_ENVIRONMENT_TYPE') && 'development' === WP_ENVIRONMENT_TYPE) {
+        return true;
+    }
+
+    if (defined('WP_DEBUG') && WP_DEBUG && ! file_exists(teste_vite_manifest_path())) {
+        return true;
+    }
+
+    return false;
 }
