@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
 import path from 'node:path';
 
 const themeRoot = path.resolve(__dirname, 'src');
@@ -7,6 +8,9 @@ const host = process.env.WP_VITE_HOST || '127.0.0.1';
 const port = Number(process.env.WP_VITE_PORT || 5173);
 
 export default defineConfig({
+  plugins: [
+    tailwindcss(),
+  ],
   server: {
     host,
     port,
