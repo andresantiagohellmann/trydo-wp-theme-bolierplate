@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 
 		// Add click event listener
-		ctaButton.addEventListener('click', (event) => {
+		ctaButton.addEventListener('click', () => {
 			// Prevent default link behavior if needed
 			// event.preventDefault();
 

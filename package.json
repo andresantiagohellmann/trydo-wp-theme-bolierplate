@@ -6,12 +6,42 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "pnpm run lint:js && pnpm run lint:css",
+    "lint:js": "eslint .",
+    "lint:css": "stylelint \"**/*.css\"",
+    "format": "prettier --write \"**/*.{js,jsx,json,css,md,php,html}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,json,css,md,php,html}\"",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@prettier/plugin-php": "^0.24.0",
     "@tailwindcss/vite": "^4.1.14",
+    "eslint": "^9.17.0",
+    "eslint-plugin-react": "^7.37.3",
+    "globals": "^15.14.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.7.1",
+    "stylelint": "^16.12.0",
+    "stylelint-config-standard": "^36.0.1",
     "tailwindcss": "^4.1.14",
     "vite": "^7.1.7"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.css": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,php,html}": [
+      "prettier --write"
+    ]
   },
   "packageManager": "pnpm@10.18.3+sha512.bbd16e6d7286fd7e01f6b3c0b3c932cda2965c06a908328f74663f10a9aea51f1129eea615134bf992831b009eabe167ecb7008b597f40ff9bc75946aadfb08d"
 }

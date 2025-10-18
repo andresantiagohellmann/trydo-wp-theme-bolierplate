@@ -4,10 +4,10 @@ import './editor.css';
 
 const { registerBlockType } = wp.blocks;
 
-const { name, render, ...settings } = metadata;
+const { name, render: _render, ...settings } = metadata;
 
-registerBlockType( name, {
+registerBlockType(name, {
 	...settings,
 	edit: Edit,
 	save: () => null,
-} );
+});

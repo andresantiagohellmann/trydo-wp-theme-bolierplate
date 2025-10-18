@@ -1,11 +1,13 @@
 # Trydo WP Theme Bolierplate – Development Journal
 
 ## Purpose
+
 - Centralize the project’s architecture notes, decisions, and troubleshooting tips.
 - Record the workflows that keep the Vite + WordPress integration healthy (theme + blocks).
 - Capture what changed and why whenever we land a successful update (add an entry under **Decision Log** when committing).
 
 ## Theme Architecture
+
 - **Bootstrap** (`src/functions.php`): Loads the modular helpers in `src/inc/` and wires them into WordPress via hooks.
 - **Constants** (`src/inc/constants.php`): Stores the canonical entry points for the Vite build (theme, blocks, editor).
 - **Vite helpers** (`src/inc/vite.php`): Resolves paths/URLs, reads the manifest, and talks to the dev server. All helper functions use the `trydo_wp_theme_bolierplate_` prefix.
@@ -14,6 +16,7 @@
 - **Blocks** (`src/inc/blocks.php`): Auto-registers block directories under `src/blocks`, attaches `render.php` as needed, and creates a custom "Trydo Blocks" category that appears first in the editor.
 
 ## Asset & Content Structure
+
 - Global styles live in `src/resources/styles/` and scripts in `src/resources/scripts/`. `fonts/` and `images/` are reserved for static assets.
 - The main entry (`main.js`) imports Tailwind and block styles; the editor entry keeps the block editor in sync.
 - Block-specific assets sit in `src/blocks/<block-name>/` alongside their `block.json`, `edit.js`, `editor.css`, and `render.php`.
@@ -22,9 +25,11 @@
 ## CSS Architecture & Tailwind v4
 
 ### Tailwind CSS v4 Integration
+
 O tema utiliza **Tailwind CSS v4** integrado via `@tailwindcss/vite`. Diferente do v3, o v4 não usa `tailwind.config.js` e aplica configurações diretamente nos arquivos CSS através de diretivas.
 
 **Arquivos principais:**
+
 - `src/resources/styles/main.css`: Importa o Tailwind para o front-end e define estilos globais do tema
 - `src/resources/styles/editor.css`: Usa `@reference "./main.css"` para compartilhar configurações do Tailwind sem reimportar o framework
 - `src/blocks/*/style.css`: Estilos do bloco no front-end, usa `@reference` para acessar utilitários do Tailwind
@@ -35,6 +40,7 @@ O tema utiliza **Tailwind CSS v4** integrado via `@tailwindcss/vite`. Diferente 
 **IMPORTANTE:** Este tema usa uma estratégia específica para evitar que estilos do Tailwind sobrescrevam estilos dos blocos.
 
 #### Ordem de precedência no CSS Cascade Layers:
+
 1. **Estilos FORA de layers** (maior prioridade)
 2. `@layer utilities`
 3. `@layer theme`
@@ -44,29 +50,34 @@ O tema utiliza **Tailwind CSS v4** integrado via `@tailwindcss/vite`. Diferente 
 #### Implementação nos blocos:
 
 **❌ NÃO FAÇA (estilos dentro de @layer theme):**
+
 ```css
 @reference "../../resources/styles/main.css";
 
 @layer theme {
-  .wp-block-meu-bloco__title {
-    @apply text-2xl font-semibold;
-  }
+	.wp-block-meu-bloco__title {
+		@apply text-2xl font-semibold;
+	}
 }
 ```
-*Problema: O `@layer base` do Tailwind pode sobrescrever estes estilos devido à ordem de processamento do Vite.*
+
+_Problema: O `@layer base` do Tailwind pode sobrescrever estes estilos devido à ordem de processamento do Vite._
 
 **✅ FAÇA (estilos FORA de layers):**
+
 ```css
 @reference "../../resources/styles/main.css";
 
 /* Estilos fora de @layer têm prioridade sobre estilos dentro de layers */
 .wp-block-meu-bloco__title {
-  @apply text-2xl font-semibold;
+	@apply text-2xl font-semibold;
 }
 ```
-*Solução: Estilos fora de layers têm prioridade absoluta sobre todos os estilos dentro de layers, incluindo o reset do Tailwind.*
+
+_Solução: Estilos fora de layers têm prioridade absoluta sobre todos os estilos dentro de layers, incluindo o reset do Tailwind._
 
 #### Como o @reference funciona:
+
 - `@reference` é uma diretiva do Tailwind v4 que permite compartilhar configurações entre arquivos CSS
 - Arquivos que usam `@reference` podem acessar utilitários do Tailwind via `@apply` sem reimportar o framework
 - Isso evita duplicação de código e mantém o bundle otimizado
@@ -75,12 +86,14 @@ O tema utiliza **Tailwind CSS v4** integrado via `@tailwindcss/vite`. Diferente 
 #### Estrutura de imports:
 
 **JavaScript (`src/resources/scripts/main.js`):**
+
 ```javascript
 import '../styles/main.css';
 const blockStyles = import.meta.glob('@/blocks/**/style.css', { eager: true });
 ```
 
 **JavaScript (`src/resources/scripts/editor.js`):**
+
 ```javascript
 import '../styles/editor.css';
 import.meta.glob('@/blocks/**/editor.css', { eager: true });
@@ -89,6 +102,7 @@ import.meta.glob('@/blocks/**/editor.css', { eager: true });
 O `import.meta.glob` carrega automaticamente todos os arquivos CSS dos blocos, eliminando a necessidade de importá-los manualmente.
 
 ## Local Development Workflow
+
 1. **Install dependencies:** `pnpm install`.
 2. **Configure host/port (optional):** set `WP_VITE_HOST` and `WP_VITE_PORT` in your environment if you need something other than `127.0.0.1:5173`.
 3. **Run dev server:** `pnpm dev`. The Vite helpers look for the dev server via `trydo_wp_theme_bolierplate_vite_dev_server_origin()`.
@@ -96,22 +110,26 @@ O `import.meta.glob` carrega automaticamente todos os arquivos CSS dos blocos, e
 5. **Block development:** Any time you scaffold a new block under `src/blocks`, its `index.js` will be pulled into the build via `src/blocks/index.js`. Hot reloading works for both blocks and theme assets while the dev server is running.
 
 ### Troubleshooting Dev Mode
+
 - **Dev server not detected:** Check the browser console for 404s to `@vite/client`. Confirm `pnpm dev` is running and that the host/port matches any reverse proxy or Docker network you're using. Override with the `trydo_wp_theme_bolierplate_vite_dev_server_origin` filter or `WP_VITE_SERVER` env variable if needed.
 - **Manifest warning:** If the log shows "Manifest not found… Run `pnpm build`", it means the build artifacts are missing and the dev server is offline. Either restart `pnpm dev` or generate a fresh build.
 - **HMR não funciona no editor:** Verifique se `src/resources/styles/editor.css` está usando `@reference "./main.css"` e NÃO `@import "tailwindcss"`. Importar o Tailwind duas vezes quebra o HMR.
 - **Estilos dos blocos sendo sobrescritos:** Se estilos como `font-size`, `margin`, ou `padding` dos blocos estão sendo ignorados, verifique se os arquivos CSS dos blocos (`style.css` e `editor.css`) NÃO estão usando `@layer theme` ou qualquer outra layer. Os estilos devem estar diretamente no arquivo, fora de qualquer `@layer`. Exemplo correto:
-  ```css
-  @reference "../../resources/styles/main.css";
 
-  /* Sem @layer aqui! */
-  .wp-block-meu-bloco {
-    @apply text-2xl font-bold;
-  }
-  ```
+    ```css
+    @reference "../../resources/styles/main.css";
+
+    /* Sem @layer aqui! */
+    .wp-block-meu-bloco {
+    	@apply text-2xl font-bold;
+    }
+    ```
+
 - **Erro "Cannot apply unknown utility class":** Isso indica que o arquivo CSS não tem acesso ao Tailwind. Verifique se há um `@reference` no topo do arquivo apontando para `main.css` (front-end) ou `editor.css` (editor).
 - **Bundle CSS muito grande:** Se o bundle cresceu muito após adicionar blocos, pode estar havendo duplicação do Tailwind. Verifique se nenhum arquivo está usando `@import "tailwindcss"` além do `main.css`. Outros arquivos devem usar `@reference`.
 
 ## Production Build Workflow
+
 1. Ensure `pnpm install` has run.
 2. Execute `pnpm build`. The output lands in `/dist` with an updated `manifest.json`.
 3. Verify the WordPress site with the dev server stopped to ensure it reads from `/dist`.
@@ -120,25 +138,29 @@ O `import.meta.glob` carrega automaticamente todos os arquivos CSS dos blocos, e
 ## Common Customizations
 
 ### Global Styles
+
 Edit `src/resources/styles/main.css` for front-end defaults. Tailwind utilities are available because Tailwind is imported at the top of the file.
 
 **Exemplo:**
+
 ```css
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @layer theme {
-  body {
-    @apply bg-gray-50 text-gray-900;
-  }
+	body {
+		@apply bg-gray-50 text-gray-900;
+	}
 }
 ```
 
 ### Editor Styles
+
 Use `src/resources/styles/editor.css` para ajustar a aparência do editor de blocos. Este arquivo usa `@reference "./main.css"` para compartilhar as configurações do Tailwind.
 
 **IMPORTANTE:** Não importe `@import "tailwindcss"` novamente no `editor.css`, pois isso quebraria o HMR e duplicaria o CSS.
 
 ### Scripts
+
 Extend `src/resources/scripts/main.js` or `editor.js` for site or editor behaviors. Import new modules using relative paths or the `@` alias (points to `src/`).
 
 ### Adicionando Novos Blocos
@@ -146,6 +168,7 @@ Extend `src/resources/scripts/main.js` or `editor.js` for site or editor behavio
 O sistema carrega automaticamente todos os blocos em `src/blocks/*/`. Para criar um novo bloco:
 
 #### 1. Crie a estrutura de pastas:
+
 ```
 src/blocks/meu-novo-bloco/
 ├── block.json        # Metadados do bloco (obrigatório)
@@ -158,25 +181,27 @@ src/blocks/meu-novo-bloco/
 ```
 
 #### 2. Configure o `block.json`:
+
 ```json
 {
-  "apiVersion": 3,
-  "name": "trydo-wp-theme-bolierplate/meu-novo-bloco",
-  "title": "Meu Novo Bloco",
-  "category": "trydo-blocks",
-  "icon": "smiley",
-  "description": "Descrição do bloco",
-  "supports": {
-    "html": false
-  },
-  "textdomain": "trydo-wp-theme-bolierplate",
-  "render": "file:./render.php"
+	"apiVersion": 3,
+	"name": "trydo-wp-theme-bolierplate/meu-novo-bloco",
+	"title": "Meu Novo Bloco",
+	"category": "trydo-blocks",
+	"icon": "smiley",
+	"description": "Descrição do bloco",
+	"supports": {
+		"html": false
+	},
+	"textdomain": "trydo-wp-theme-bolierplate",
+	"render": "file:./render.php"
 }
 ```
 
 **Nota:** Use `"category": "trydo-blocks"` para que o bloco apareça na categoria customizada "Trydo Blocks", que é exibida em primeiro lugar no editor.
 
 #### 3. Crie o `index.js`:
+
 ```javascript
 import metadata from './block.json';
 import Edit from './edit.jsx';
@@ -186,9 +211,9 @@ const { registerBlockType } = wp.blocks;
 const { name, ...settings } = metadata;
 
 registerBlockType(name, {
-  ...settings,
-  edit: Edit,
-  save: () => null, // Dynamic block
+	...settings,
+	edit: Edit,
+	save: () => null, // Dynamic block
 });
 ```
 
@@ -203,66 +228,70 @@ const { useBlockProps, RichText } = wp.blockEditor;
 const BLOCK_CLASS = 'wp-block-trydo-wp-theme-bolierplate-meu-novo-bloco';
 
 export default function Edit({ attributes, setAttributes }) {
-  const { title, description } = attributes;
+	const { title, description } = attributes;
 
-  const blockProps = useBlockProps({
-    className: BLOCK_CLASS,
-  });
+	const blockProps = useBlockProps({
+		className: BLOCK_CLASS,
+	});
 
-  return (
-    <div {...blockProps}>
-      <RichText
-        tagName="h3"
-        className={`${BLOCK_CLASS}__title`}
-        value={title}
-        onChange={(value) => setAttributes({ title: value })}
-        placeholder={__('Adicionar título…', 'trydo-wp-theme-bolierplate')}
-      />
-      <RichText
-        tagName="p"
-        className={`${BLOCK_CLASS}__description`}
-        value={description}
-        onChange={(value) => setAttributes({ description: value })}
-        placeholder={__('Adicionar descrição…', 'trydo-wp-theme-bolierplate')}
-      />
-    </div>
-  );
+	return (
+		<div {...blockProps}>
+			<RichText
+				tagName="h3"
+				className={`${BLOCK_CLASS}__title`}
+				value={title}
+				onChange={(value) => setAttributes({ title: value })}
+				placeholder={__('Adicionar título…', 'trydo-wp-theme-bolierplate')}
+			/>
+			<RichText
+				tagName="p"
+				className={`${BLOCK_CLASS}__description`}
+				value={description}
+				onChange={(value) => setAttributes({ description: value })}
+				placeholder={__('Adicionar descrição…', 'trydo-wp-theme-bolierplate')}
+			/>
+		</div>
+	);
 }
 ```
 
 **Por que JSX?**
+
 - ✅ Sintaxe mais limpa e legível
 - ✅ Similar ao HTML/PHP do `render.php`
 - ✅ Mais produtivo do que `createElement`
 - ✅ Vite processa JSX automaticamente, sem configuração adicional
 
 #### 5. Crie o `style.css` (IMPORTANTE):
+
 ```css
 @reference "../../resources/styles/main.css";
 
 /* Estilos fora de @layer têm prioridade sobre estilos dentro de layers */
 .wp-block-trydo-wp-theme-bolierplate-meu-novo-bloco {
-  @apply rounded-lg bg-white p-6 shadow-md;
+	@apply rounded-lg bg-white p-6 shadow-md;
 }
 
 .wp-block-trydo-wp-theme-bolierplate-meu-novo-bloco h3 {
-  @apply text-xl font-bold;
+	@apply text-xl font-bold;
 }
 ```
 
 **⚠️ NUNCA use `@layer theme` ou qualquer outra layer nos estilos dos blocos!** Isso causará problemas de precedência onde o reset do Tailwind (`@layer base`) sobrescreverá seus estilos.
 
 #### 6. Crie o `editor.css` (opcional):
+
 ```css
 @reference "../../resources/styles/editor.css";
 
 /* Estilos específicos do editor, fora de layers */
 .wp-block-trydo-wp-theme-bolierplate-meu-novo-bloco {
-  @apply border-2 border-dashed border-gray-300;
+	@apply border-2 border-dashed border-gray-300;
 }
 ```
 
 #### 7. Crie o `render.php` (para dynamic blocks):
+
 ```php
 <?php
 /**
@@ -286,30 +315,32 @@ O `view.js` adiciona JavaScript interativo ao bloco no front-end (não afeta o e
 const BLOCK_CLASS = 'wp-block-trydo-wp-theme-bolierplate-meu-novo-bloco';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const blocks = document.querySelectorAll(`.${BLOCK_CLASS}`);
+	const blocks = document.querySelectorAll(`.${BLOCK_CLASS}`);
 
-  blocks.forEach((block) => {
-    const button = block.querySelector(`.${BLOCK_CLASS}__button`);
+	blocks.forEach((block) => {
+		const button = block.querySelector(`.${BLOCK_CLASS}__button`);
 
-    if (!button) return;
+		if (!button) return;
 
-    button.addEventListener('click', (event) => {
-      // Adicione sua lógica aqui
-      alert('Botão clicado!');
-    });
-  });
+		button.addEventListener('click', (event) => {
+			// Adicione sua lógica aqui
+			alert('Botão clicado!');
+		});
+	});
 });
 ```
 
 **Não esqueça de declarar no `block.json`:**
+
 ```json
 {
-  "render": "file:./render.php",
-  "viewScript": "file:./view.js"
+	"render": "file:./render.php",
+	"viewScript": "file:./view.js"
 }
 ```
 
 **Casos de uso para `view.js`:**
+
 - Carrosséis/sliders
 - Tabs/accordions
 - Modais/lightboxes
@@ -320,12 +351,203 @@ document.addEventListener('DOMContentLoaded', () => {
 **Pronto!** O bloco será automaticamente reconhecido e carregado. Não é necessário editar `src/blocks/index.js`, `main.js` ou `editor.js`.
 
 ### Theme Metadata
+
 Adjust fields like `Description`, `Author`, or version in `src/style.css`.
 
 ### Asset Handles
+
 JS/CSS handles are prefixed with `trydo-wp-theme-bolierplate-…`. Keep this consistent when registering additional assets.
 
+## Development Workflow
+
+### Getting Started
+
+1. **Install dependencies:**
+
+    ```bash
+    pnpm install
+    ```
+
+2. **Start development server:**
+
+    ```bash
+    pnpm dev
+    ```
+
+3. **Build for production:**
+    ```bash
+    pnpm build
+    ```
+
+### Code Quality Tools
+
+Este projeto usa ferramentas modernas para manter a qualidade e consistência do código:
+
+#### EditorConfig
+
+Garante formatação consistente entre diferentes editores e IDEs. Configurado em `.editorconfig` com:
+
+- Tabs para indentação (PHP/JS/CSS)
+- Spaces para JSON/YAML
+- UTF-8 encoding
+- LF line endings
+
+#### ESLint
+
+Linting para JavaScript/JSX com regras específicas para WordPress e React.
+
+**Comandos:**
+
+```bash
+pnpm lint:js           # Check for linting errors
+pnpm lint:js --fix     # Auto-fix linting errors
+```
+
+**Configuração:** `eslint.config.js` (flat config format)
+
+- Suporte a WordPress globals (`wp`, `jQuery`)
+- React JSX rules
+- Best practices modernas
+
+#### Prettier
+
+Formatação automática de código para JS, JSX, JSON, CSS, Markdown, PHP e HTML.
+
+**Comandos:**
+
+```bash
+pnpm format            # Format all files
+pnpm format:check      # Check if files are formatted
+```
+
+**Configuração:** `.prettierrc`
+
+- Tabs para indentação
+- Single quotes
+- 100 caracteres por linha
+- Trailing commas (ES5)
+- **Auto-sort de classes Tailwind** (via `prettier-plugin-tailwindcss`)
+- **Suporte a PHP** (via `@prettier/plugin-php`)
+
+**Auto-sort de Classes Tailwind:**
+
+O Prettier ordena automaticamente as classes Tailwind seguindo a ordem recomendada oficial:
+
+```jsx
+// Antes
+<div className="p-4 mt-2 bg-blue-500 text-white rounded-lg">
+
+// Depois (automaticamente ordenado)
+<div className="mt-2 rounded-lg bg-blue-500 p-4 text-white">
+```
+
+**Tipos de arquivo suportados:**
+
+- ✅ **JSX/TSX**: `className="..."`
+- ✅ **HTML**: `class="..."`
+- ✅ **CSS**: `@apply ...`
+- ✅ **PHP**: `class="..."` em blocos HTML (strings PHP não são ordenadas)
+
+**IMPORTANTE:** O auto-sort roda automaticamente:
+
+1. Ao salvar no VSCode (se "Format on Save" estiver habilitado)
+2. Ao executar `pnpm format`
+3. Nos pre-commit hooks (antes de cada commit)
+
+#### Stylelint
+
+Linting para CSS com suporte específico para Tailwind CSS v4.
+
+**Comandos:**
+
+```bash
+pnpm lint:css          # Check CSS files
+pnpm lint:css --fix    # Auto-fix CSS issues
+```
+
+**Configuração:** `.stylelintrc.json`
+
+- Ignora diretivas do Tailwind v4 (`@reference`, `@layer`, `@apply`)
+- Ignora função `theme()`
+- Desabilita regras que conflitam com Tailwind
+
+#### Lint-Staged + Husky
+
+Pre-commit hooks que rodam automaticamente antes de cada commit.
+
+**O que acontece no pre-commit:**
+
+1. ESLint + auto-fix nos arquivos `.js` e `.jsx` modificados
+2. Stylelint + auto-fix nos arquivos `.css` modificados
+3. Prettier nos arquivos modificados
+4. Se houver erros não corrigíveis, o commit é bloqueado
+
+**Configuração:**
+
+- `.husky/pre-commit`: Hook de pre-commit
+- `package.json`: Configuração do `lint-staged`
+
+**Para pular o pre-commit hook (use apenas quando necessário):**
+
+```bash
+git commit --no-verify -m "message"
+```
+
+### VSCode Integration
+
+O projeto inclui configurações recomendadas do VSCode em `.vscode/`:
+
+#### Settings (`.vscode/settings.json`)
+
+- Format on save habilitado
+- ESLint auto-fix on save
+- Stylelint auto-fix on save
+- Tailwind IntelliSense configurado
+- Validação CSS nativa desabilitada (usa Stylelint)
+
+#### Extensões Recomendadas (`.vscode/extensions.json`)
+
+Instale estas extensões para melhor experiência de desenvolvimento:
+
+1. **Prettier** - Formatação de código
+2. **ESLint** - Linting JavaScript
+3. **Stylelint** - Linting CSS
+4. **Tailwind CSS IntelliSense** - Autocomplete Tailwind
+5. **EditorConfig** - Suporte a .editorconfig
+6. **Path Intellisense** - Autocomplete de paths
+7. **HTML CSS Class Completion** - Autocomplete de classes
+8. **Intelephense** - PHP IntelliSense
+
+**Como instalar:**
+No VSCode, abra a paleta de comandos (Cmd/Ctrl+Shift+P) e digite "Show Recommended Extensions".
+
+### Scripts Disponíveis
+
+```bash
+# Development
+pnpm dev               # Inicia Vite dev server com HMR
+pnpm build             # Build de produção
+pnpm preview           # Preview do build de produção
+
+# Code Quality
+pnpm lint              # Roda ESLint + Stylelint
+pnpm lint:js           # Roda apenas ESLint
+pnpm lint:css          # Roda apenas Stylelint
+pnpm format            # Formata todos os arquivos
+pnpm format:check      # Verifica se arquivos estão formatados
+```
+
+### Boas Práticas
+
+1. **Sempre rode `pnpm lint` antes de commitar** (ou confie nos pre-commit hooks)
+2. **Use `pnpm format` para formatar o código** antes de abrir PRs
+3. **Não desabilite as regras do linter** sem discutir com a equipe
+4. **Mantenha o `development-journal.md` atualizado** com mudanças arquiteturais
+5. **Use JSX em vez de createElement** para componentes de blocos
+6. **Coloque estilos de blocos FORA de @layer** para evitar sobrescrita do Tailwind
+
 ## Decision Log
+
 - **Asset restructure (2024):** Renamed `/src/assets` to `/src/resources` and split contents into `styles/`, `scripts/`, `fonts/`, `images/` for clarity and future growth.
 - **Theme rebrand (2024):** Updated theme slug, text domain, and all PHP/JS prefixes from `teste` to `trydo-wp-theme-bolierplate` to avoid collisions and make translations consistent.
 - **Module split (2024):** Moved bootstrap logic from `functions.php` into dedicated files under `src/inc/` to improve readability and reuse.
@@ -335,10 +557,13 @@ JS/CSS handles are prefixed with `trydo-wp-theme-bolierplate-…`. Keep this con
 - **JSX para componentes de blocos (Outubro 2024):** Migração de `createElement` para JSX nos componentes `Edit` dos blocos. Arquivos `edit.js` renomeados para `edit.jsx`. Razão: JSX oferece sintaxe mais limpa e produtiva, similar ao HTML/PHP usado no `render.php`, facilitando o desenvolvimento. O Vite já suporta JSX nativamente sem necessidade de configuração adicional.
 - **Categoria customizada de blocos (Outubro 2024):** Criação da categoria "Trydo Blocks" que aparece em primeiro lugar no inseridor de blocos do editor. Todos os blocos do tema usam `"category": "trydo-blocks"` no `block.json`. Razão: Melhor organização e descoberta dos blocos do tema, separando-os dos blocos nativos do WordPress e de plugins.
 - **Suporte a view.js no boilerplate (Outubro 2024):** Adicionado arquivo `view.js` ao bloco boilerplate para demonstrar JavaScript interativo no front-end. O WordPress carrega automaticamente via `"viewScript": "file:./view.js"` no `block.json`, enfileirando o script apenas em páginas que contêm o bloco. Razão: Fornece exemplo prático de interatividade no front-end, separado do JavaScript do editor.
+- **Modernização das ferramentas de desenvolvimento (Outubro 2024):** Adicionado stack completo de ferramentas de qualidade de código: EditorConfig, ESLint (flat config), Prettier, Stylelint (com suporte Tailwind v4), Husky + lint-staged para pre-commit hooks, e configurações VSCode. Razão: Manter consistência de código, automatizar formatação, prevenir erros comuns, e melhorar a experiência de desenvolvimento. As ferramentas rodam automaticamente antes de cada commit via hooks, garantindo que o código sempre esteja formatado e livre de erros básicos.
+- **Auto-sort de classes Tailwind (Outubro 2024):** Adicionado `prettier-plugin-tailwindcss` e `@prettier/plugin-php` para ordenar automaticamente classes Tailwind em JSX, HTML, CSS (`@apply`) e PHP. Razão: Classes Tailwind organizadas de forma consistente facilitam a leitura e manutenção do código. O plugin segue a ordem recomendada pelo Tailwind (layout → spacing → typography → visual → etc). Funciona automaticamente no format-on-save e nos pre-commit hooks. Limitação conhecida: strings PHP não são ordenadas, apenas atributos HTML em arquivos PHP.
 
 > When you land a change that affects the build process, architecture, or conventions, append a new bullet here with the date, summary, and rationale.
 
 ## Maintenance Checklist Before Committing
+
 - [ ] Run the relevant dev/build command and confirm the site behaves as expected.
 - [ ] Update this journal with notable changes or fixes.
 - [ ] Mention any new environment variables or configuration toggles introduced.

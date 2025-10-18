@@ -7,11 +7,7 @@
   "category": "trydo-blocks",
   "icon": "index-card",
   "description": "Card destacado com título, descrição e link usando o design base do tema.",
-  "keywords": [
-    "card",
-    "cta",
-    "tailwind"
-  ],
+  "keywords": ["card", "cta", "tailwind"],
   "supports": {
     "html": false,
     "spacing": {

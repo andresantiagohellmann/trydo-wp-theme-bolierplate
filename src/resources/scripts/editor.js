@@ -42,7 +42,7 @@ const syncStylesToIframe = (iframeDoc, styles) => {
 	for (const styleNode of styles) {
 		const viteId = styleNode.getAttribute(VITE_STYLE_ATTRIBUTE);
 
-		if (! viteId) {
+		if (!viteId) {
 			continue;
 		}
 
@@ -51,7 +51,7 @@ const syncStylesToIframe = (iframeDoc, styles) => {
 		const targetId = sanitizeId(viteId);
 		let target = iframeDoc.getElementById(targetId);
 
-		if (! target) {
+		if (!target) {
 			target = iframeDoc.createElement('style');
 			target.id = targetId;
 			target.setAttribute(VITE_STYLE_ATTRIBUTE, viteId);
@@ -63,14 +63,12 @@ const syncStylesToIframe = (iframeDoc, styles) => {
 		}
 	}
 
-	const existing = Array.from(
-		iframeDoc.querySelectorAll(`style[${VITE_STYLE_ATTRIBUTE}]`)
-	);
+	const existing = Array.from(iframeDoc.querySelectorAll(`style[${VITE_STYLE_ATTRIBUTE}]`));
 
 	for (const node of existing) {
 		const viteId = node.getAttribute(VITE_STYLE_ATTRIBUTE);
 
-		if (! viteId || activeIds.has(viteId)) {
+		if (!viteId || activeIds.has(viteId)) {
 			continue;
 		}
 
@@ -83,24 +81,22 @@ const syncEditorStyles = () => {
 		return;
 	}
 
-	const styles = Array.from(
-		document.querySelectorAll(`style[${VITE_STYLE_ATTRIBUTE}]`)
-	);
+	const styles = Array.from(document.querySelectorAll(`style[${VITE_STYLE_ATTRIBUTE}]`));
 
-	if (! styles.length) {
+	if (!styles.length) {
 		return;
 	}
 
 	const iframes = findEditorIframes();
 
-	if (! iframes.length) {
+	if (!iframes.length) {
 		return;
 	}
 
 	for (const iframe of iframes) {
 		const doc = iframe.contentDocument;
 
-		if (! doc) {
+		if (!doc) {
 			continue;
 		}
 
@@ -117,7 +113,10 @@ const setupSync = () => {
 		try {
 			syncEditorStyles();
 		} catch (error) {
-			console.error('[trydo-wp-theme-bolierplate theme] Failed to sync editor styles from Vite.', error);
+			console.error(
+				'[trydo-wp-theme-bolierplate theme] Failed to sync editor styles from Vite.',
+				error
+			);
 		}
 	};
 
@@ -135,7 +134,7 @@ const setupSync = () => {
 	const bodyObserver = new MutationObserver(maybeSync);
 
 	const observeBody = () => {
-		if (! document.body) {
+		if (!document.body) {
 			return;
 		}
 
@@ -146,19 +145,27 @@ const setupSync = () => {
 	};
 
 	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', () => {
-			observeBody();
-			maybeSync();
-			registerIframeListeners();
-		}, { once: true });
+		document.addEventListener(
+			'DOMContentLoaded',
+			() => {
+				observeBody();
+				maybeSync();
+				registerIframeListeners();
+			},
+			{ once: true }
+		);
 	} else {
 		observeBody();
 	}
 
-	window.addEventListener('load', () => {
-		maybeSync();
-		registerIframeListeners();
-	}, { once: true });
+	window.addEventListener(
+		'load',
+		() => {
+			maybeSync();
+			registerIframeListeners();
+		},
+		{ once: true }
+	);
 	window.addEventListener('focus', maybeSync);
 
 	const registerIframeListeners = () => {
