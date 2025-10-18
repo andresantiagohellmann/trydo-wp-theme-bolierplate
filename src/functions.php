@@ -55,12 +55,14 @@ function teste_enqueue_block_editor_assets(): void
 
     $origin = teste_vite_enqueue_entry(TESTE_VITE_BLOCK_EDITOR_ENTRY, 'teste-blocks-editor', $dependencies);
 
-    teste_vite_enqueue_entry(
-        TESTE_VITE_EDITOR_ENTRY,
-        'teste-editor-entry',
-        [],
-        $origin
-    );
+    if ($origin) {
+        teste_vite_enqueue_entry(
+            TESTE_VITE_EDITOR_ENTRY,
+            'teste-editor-entry',
+            [],
+            $origin
+        );
+    }
 }
 
 /**
@@ -385,17 +387,6 @@ function teste_setup_theme_support(): void
  */
 function teste_vite_resolve_editor_style_urls(): array
 {
-    $styles = [];
-
-    $origin = teste_vite_dev_server_origin();
-
-    if ($origin) {
-        $styles[] = "{$origin}/src/assets/main.css";
-        $styles[] = "{$origin}/src/assets/editor.css";
-
-        return array_values(array_unique($styles));
-    }
-
     $manifest = teste_vite_manifest();
 
     if (! $manifest) {
@@ -430,6 +421,10 @@ function teste_vite_resolve_editor_style_urls(): array
  */
 function teste_setup_editor_styles(): void
 {
+    if (teste_vite_dev_server_origin()) {
+        return;
+    }
+
     $styles = teste_vite_resolve_editor_style_urls();
 
     if (! $styles) {
