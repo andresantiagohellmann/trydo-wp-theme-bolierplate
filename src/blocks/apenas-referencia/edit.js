@@ -7,7 +7,7 @@ const {
 } = wp.blockEditor;
 const { PanelBody, TextControl } = wp.components;
 
-const BLOCK_CLASS = 'wp-block-teste-apenas-referencia';
+const BLOCK_CLASS = 'wp-block-trydo-wp-theme-bolierplate-apenas-referencia';
 
 /**
  * Edit component for the Apenas Referência block.
@@ -35,11 +35,11 @@ export default function Edit( { attributes, setAttributes } ) {
 			createElement(
 				PanelBody,
 				{
-					title: __( 'Configurações do link', 'teste' ),
+					title: __( 'Configurações do link', 'trydo-wp-theme-bolierplate' ),
 					initialOpen: true,
 				},
 				createElement( TextControl, {
-					label: __( 'URL do botão', 'teste' ),
+					label: __( 'URL do botão', 'trydo-wp-theme-bolierplate' ),
 					value: linkUrl,
 					onChange: ( value ) => setAttributes( { linkUrl: value } ),
 					placeholder: 'https://',
@@ -54,7 +54,7 @@ export default function Edit( { attributes, setAttributes } ) {
 				className: `${ BLOCK_CLASS }__title`,
 				value: title,
 				onChange: ( value ) => setAttributes( { title: value } ),
-				placeholder: __( 'Adicionar título…', 'teste' ),
+				placeholder: __( 'Adicionar título…', 'trydo-wp-theme-bolierplate' ),
 				allowedFormats: [ 'core/bold', 'core/italic', 'core/link' ],
 			} ),
 			createElement( RichText, {
@@ -62,7 +62,7 @@ export default function Edit( { attributes, setAttributes } ) {
 				className: `${ BLOCK_CLASS }__description`,
 				value: description,
 				onChange: ( value ) => setAttributes( { description: value } ),
-				placeholder: __( 'Adicionar descrição…', 'teste' ),
+				placeholder: __( 'Adicionar descrição…', 'trydo-wp-theme-bolierplate' ),
 			} ),
 			createElement(
 				'div',
@@ -74,7 +74,7 @@ export default function Edit( { attributes, setAttributes } ) {
 					className: `${ BLOCK_CLASS }__button`,
 					value: linkLabel,
 					onChange: ( value ) => setAttributes( { linkLabel: value } ),
-					placeholder: __( 'Texto do botão…', 'teste' ),
+					placeholder: __( 'Texto do botão…', 'trydo-wp-theme-bolierplate' ),
 					allowedFormats: [],
 				} )
 			)

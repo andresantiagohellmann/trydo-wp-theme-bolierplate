@@ -16,7 +16,7 @@ $link_url    = $attributes['linkUrl'] ?? '#';
 
 $wrapper_attributes = get_block_wrapper_attributes(
 	array(
-		'class' => 'wp-block-teste-apenas-referencia',
+		'class' => 'wp-block-trydo-wp-theme-bolierplate-apenas-referencia',
 	)
 );
 
@@ -24,20 +24,20 @@ ob_start();
 ?>
 <div <?php echo $wrapper_attributes; ?>>
 	<?php if ( $title ) : ?>
-		<h3 class="wp-block-teste-apenas-referencia__title">
+		<h3 class="wp-block-trydo-wp-theme-bolierplate-apenas-referencia__title">
 			<?php echo esc_html( $title ); ?>
 		</h3>
 	<?php endif; ?>
 
 	<?php if ( $description ) : ?>
-		<p class="wp-block-teste-apenas-referencia__description">
+		<p class="wp-block-trydo-wp-theme-bolierplate-apenas-referencia__description">
 			<?php echo wp_kses_post( $description ); ?>
 		</p>
 	<?php endif; ?>
 
 	<?php if ( $link_label ) : ?>
 		<a
-			class="wp-block-teste-apenas-referencia__button"
+			class="wp-block-trydo-wp-theme-bolierplate-apenas-referencia__button"
 			href="<?php echo esc_url( $link_url ?: '#' ); ?>"
 		>
 			<?php echo esc_html( $link_label ); ?>

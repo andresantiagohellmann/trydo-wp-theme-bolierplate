@@ -1,8 +1,0 @@
-@import "tailwindcss";
-@import "../blocks/editor.css";
-
-
-body{
-
-    @apply bg-red-200
-}

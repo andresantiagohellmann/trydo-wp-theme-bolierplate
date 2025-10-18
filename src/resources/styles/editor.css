@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@import "../../blocks/editor.css";
+
+
+body{
+
+    @apply bg-blue-100
+}

@@ -1,7 +1,7 @@
-import './editor.css';
+import '../styles/editor.css';
 
 const VITE_STYLE_ATTRIBUTE = 'data-vite-dev-id';
-const STYLE_MOUNT_ID = 'teste-vite-style-sync';
+const STYLE_MOUNT_ID = 'trydo-wp-theme-bolierplate-vite-style-sync';
 const FRAME_SELECTORS = [
 	'iframe[name="editor-canvas"]',
 	'iframe.editor-canvas__iframe',
@@ -10,7 +10,7 @@ const FRAME_SELECTORS = [
 ];
 
 const sanitizeId = (value) =>
-	`teste-vite-style-${String(value).replace(/[^a-z0-9_-]/gi, '-')}`;
+	`trydo-wp-theme-bolierplate-vite-style-${String(value).replace(/[^a-z0-9_-]/gi, '-')}`;
 
 const findEditorIframes = () => {
 	const iframes = FRAME_SELECTORS.flatMap((selector) =>
@@ -116,7 +116,7 @@ const setupSync = () => {
 		try {
 			syncEditorStyles();
 		} catch (error) {
-			console.error('[teste theme] Failed to sync editor styles from Vite.', error);
+			console.error('[trydo-wp-theme-bolierplate theme] Failed to sync editor styles from Vite.', error);
 		}
 	};
 
