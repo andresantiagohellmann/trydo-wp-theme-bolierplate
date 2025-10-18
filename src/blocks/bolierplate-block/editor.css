@@ -1,0 +1,10 @@
+@reference "../../resources/styles/editor.css";
+
+/* Estilos fora de @layer têm prioridade sobre estilos dentro de layers */
+.wp-block-trydo-wp-theme-bolierplate-bolierplate-block {
+	@apply border border-sky-200 bg-white/70 p-8 shadow-sm transition dark:border-sky-800/60 dark:bg-slate-900/70;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-bolierplate-block__button {
+	@apply cursor-text;
+}

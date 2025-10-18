@@ -1,6 +1,1 @@
-@import "tailwindcss";
-@import "../../blocks/editor.css";
-
-
-body{
-}
+@reference "./main.css";

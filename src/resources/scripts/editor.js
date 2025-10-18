@@ -1,4 +1,5 @@
 import '../styles/editor.css';
+import.meta.glob('@/blocks/**/editor.css', { eager: true });
 
 const VITE_STYLE_ATTRIBUTE = 'data-vite-dev-id';
 const STYLE_MOUNT_ID = 'trydo-wp-theme-bolierplate-vite-style-sync';

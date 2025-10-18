@@ -1,1 +1,1 @@
-import './apenas-referencia/index.js';
+import.meta.glob('./*/index.js', { eager: true });

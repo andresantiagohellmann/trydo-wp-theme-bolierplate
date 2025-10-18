@@ -7,10 +7,10 @@ const {
 } = wp.blockEditor;
 const { PanelBody, TextControl } = wp.components;
 
-const BLOCK_CLASS = 'wp-block-trydo-wp-theme-bolierplate-apenas-referencia';
+const BLOCK_CLASS = 'wp-block-trydo-wp-theme-bolierplate-bolierplate-block';
 
 /**
- * Edit component for the Apenas Referência block.
+ * Edit component for the Boilerplate Block.
  *
  * Uses the same Tailwind-powered classes as the frontend render to keep the
  * editor preview faithful to the final markup.
