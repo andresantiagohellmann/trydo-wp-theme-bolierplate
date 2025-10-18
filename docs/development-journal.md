@@ -11,7 +11,7 @@
 - **Vite helpers** (`src/inc/vite.php`): Resolves paths/URLs, reads the manifest, and talks to the dev server. All helper functions use the `trydo_wp_theme_bolierplate_` prefix.
 - **Asset loading** (`src/inc/assets.php`): Enqueues JS/CSS for the front end and editor, handling both dev-server and built-manifest modes.
 - **Editor integration** (`src/inc/editor.php`): Registers `editor-styles` support and loads the CSS emitted for editor contexts.
-- **Blocks** (`src/inc/blocks.php`): Auto-registers block directories under `src/blocks` and attaches `render.php` as needed.
+- **Blocks** (`src/inc/blocks.php`): Auto-registers block directories under `src/blocks`, attaches `render.php` as needed, and creates a custom "Trydo Blocks" category that appears first in the editor.
 
 ## Asset & Content Structure
 - Global styles live in `src/resources/styles/` and scripts in `src/resources/scripts/`. `fonts/` and `images/` are reserved for static assets.
@@ -150,9 +150,10 @@ O sistema carrega automaticamente todos os blocos em `src/blocks/*/`. Para criar
 src/blocks/meu-novo-bloco/
 ├── block.json        # Metadados do bloco (obrigatório)
 ├── index.js          # Registro do bloco (obrigatório)
-├── edit.js           # Componente React de edição (obrigatório)
+├── edit.jsx          # Componente React de edição com JSX (obrigatório)
 ├── style.css         # Estilos do front-end (opcional)
 ├── editor.css        # Estilos do editor (opcional)
+├── view.js           # JavaScript interativo do front-end (opcional)
 └── render.php        # Template PHP para dynamic blocks (opcional)
 ```
 
@@ -162,21 +163,23 @@ src/blocks/meu-novo-bloco/
   "apiVersion": 3,
   "name": "trydo-wp-theme-bolierplate/meu-novo-bloco",
   "title": "Meu Novo Bloco",
-  "category": "common",
+  "category": "trydo-blocks",
   "icon": "smiley",
   "description": "Descrição do bloco",
   "supports": {
     "html": false
   },
   "textdomain": "trydo-wp-theme-bolierplate",
-  "editorScript": "file:./index.js"
+  "render": "file:./render.php"
 }
 ```
+
+**Nota:** Use `"category": "trydo-blocks"` para que o bloco apareça na categoria customizada "Trydo Blocks", que é exibida em primeiro lugar no editor.
 
 #### 3. Crie o `index.js`:
 ```javascript
 import metadata from './block.json';
-import Edit from './edit.js';
+import Edit from './edit.jsx';
 import './editor.css'; // Opcional
 
 const { registerBlockType } = wp.blocks;
@@ -189,17 +192,49 @@ registerBlockType(name, {
 });
 ```
 
-#### 4. Crie o `edit.js`:
-```javascript
-export default function Edit() {
+#### 4. Crie o `edit.jsx`:
+
+**IMPORTANTE:** Use JSX (`.jsx`) em vez de `createElement`. É muito mais produtivo e legível!
+
+```jsx
+const { __ } = wp.i18n;
+const { useBlockProps, RichText } = wp.blockEditor;
+
+const BLOCK_CLASS = 'wp-block-trydo-wp-theme-bolierplate-meu-novo-bloco';
+
+export default function Edit({ attributes, setAttributes }) {
+  const { title, description } = attributes;
+
+  const blockProps = useBlockProps({
+    className: BLOCK_CLASS,
+  });
+
   return (
-    <div className="wp-block-trydo-wp-theme-bolierplate-meu-novo-bloco">
-      <h3>Meu Novo Bloco</h3>
-      <p>Conteúdo do bloco no editor</p>
+    <div {...blockProps}>
+      <RichText
+        tagName="h3"
+        className={`${BLOCK_CLASS}__title`}
+        value={title}
+        onChange={(value) => setAttributes({ title: value })}
+        placeholder={__('Adicionar título…', 'trydo-wp-theme-bolierplate')}
+      />
+      <RichText
+        tagName="p"
+        className={`${BLOCK_CLASS}__description`}
+        value={description}
+        onChange={(value) => setAttributes({ description: value })}
+        placeholder={__('Adicionar descrição…', 'trydo-wp-theme-bolierplate')}
+      />
     </div>
   );
 }
 ```
+
+**Por que JSX?**
+- ✅ Sintaxe mais limpa e legível
+- ✅ Similar ao HTML/PHP do `render.php`
+- ✅ Mais produtivo do que `createElement`
+- ✅ Vite processa JSX automaticamente, sem configuração adicional
 
 #### 5. Crie o `style.css` (IMPORTANTE):
 ```css
@@ -243,6 +278,45 @@ export default function Edit() {
 </div>
 ```
 
+#### 8. Crie o `view.js` (opcional, para interatividade no front-end):
+
+O `view.js` adiciona JavaScript interativo ao bloco no front-end (não afeta o editor).
+
+```javascript
+const BLOCK_CLASS = 'wp-block-trydo-wp-theme-bolierplate-meu-novo-bloco';
+
+document.addEventListener('DOMContentLoaded', () => {
+  const blocks = document.querySelectorAll(`.${BLOCK_CLASS}`);
+
+  blocks.forEach((block) => {
+    const button = block.querySelector(`.${BLOCK_CLASS}__button`);
+
+    if (!button) return;
+
+    button.addEventListener('click', (event) => {
+      // Adicione sua lógica aqui
+      alert('Botão clicado!');
+    });
+  });
+});
+```
+
+**Não esqueça de declarar no `block.json`:**
+```json
+{
+  "render": "file:./render.php",
+  "viewScript": "file:./view.js"
+}
+```
+
+**Casos de uso para `view.js`:**
+- Carrosséis/sliders
+- Tabs/accordions
+- Modais/lightboxes
+- Animações on scroll
+- Validação de formulários
+- Analytics/tracking
+
 **Pronto!** O bloco será automaticamente reconhecido e carregado. Não é necessário editar `src/blocks/index.js`, `main.js` ou `editor.js`.
 
 ### Theme Metadata
@@ -258,6 +332,9 @@ JS/CSS handles are prefixed with `trydo-wp-theme-bolierplate-…`. Keep this con
 - **Auto-discovery de blocos (2024):** `src/blocks/index.js`, `main.js` e `editor.js` passaram a usar `import.meta.glob` para carregar dinamicamente novos blocos e seus estilos, eliminando ajustes manuais ao criar um bloco.
 - **CSS Cascade Layers fix (Outubro 2024):** Removemos `@layer theme` dos arquivos CSS dos blocos (`style.css` e `editor.css`) para evitar que o `@layer base` do Tailwind sobrescreva os estilos dos blocos. Razão: Quando usado com `@reference` e `import.meta.glob`, o Vite processa os arquivos em paralelo, causando uma ordem de layers onde `theme` aparece antes de `base` no arquivo compilado. Como não há declaração explícita de ordem de layers no output do Tailwind v4, o CSS usa ordem de aparição, fazendo o `base` sobrescrever `theme`. Solução: Estilos fora de layers têm precedência absoluta sobre estilos dentro de layers, garantindo que os blocos não sejam afetados pelo reset do Tailwind.
 - **HMR optimization no editor (Outubro 2024):** `src/resources/styles/editor.css` passou a usar `@reference "./main.css"` em vez de `@import "tailwindcss"` para compartilhar configurações do Tailwind sem reimportar o framework. Isso mantém o HMR (Hot Module Replacement) funcionando corretamente no editor e evita duplicação de CSS no bundle final.
+- **JSX para componentes de blocos (Outubro 2024):** Migração de `createElement` para JSX nos componentes `Edit` dos blocos. Arquivos `edit.js` renomeados para `edit.jsx`. Razão: JSX oferece sintaxe mais limpa e produtiva, similar ao HTML/PHP usado no `render.php`, facilitando o desenvolvimento. O Vite já suporta JSX nativamente sem necessidade de configuração adicional.
+- **Categoria customizada de blocos (Outubro 2024):** Criação da categoria "Trydo Blocks" que aparece em primeiro lugar no inseridor de blocos do editor. Todos os blocos do tema usam `"category": "trydo-blocks"` no `block.json`. Razão: Melhor organização e descoberta dos blocos do tema, separando-os dos blocos nativos do WordPress e de plugins.
+- **Suporte a view.js no boilerplate (Outubro 2024):** Adicionado arquivo `view.js` ao bloco boilerplate para demonstrar JavaScript interativo no front-end. O WordPress carrega automaticamente via `"viewScript": "file:./view.js"` no `block.json`, enfileirando o script apenas em páginas que contêm o bloco. Razão: Fornece exemplo prático de interatividade no front-end, separado do JavaScript do editor.
 
 > When you land a change that affects the build process, architecture, or conventions, append a new bullet here with the date, summary, and rationale.
 

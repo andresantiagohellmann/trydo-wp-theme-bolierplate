@@ -1,5 +1,5 @@
 import metadata from './block.json';
-import Edit from './edit.js';
+import Edit from './edit.jsx';
 import './editor.css';
 
 const { registerBlockType } = wp.blocks;

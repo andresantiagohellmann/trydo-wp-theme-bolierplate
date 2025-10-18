@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "name": "trydo-wp-theme-bolierplate/bolierplate-block",
   "title": "Bloco Boilerplate",
-  "category": "widgets",
+  "category": "trydo-blocks",
   "icon": "index-card",
   "description": "Card destacado com título, descrição e link usando o design base do tema.",
   "keywords": [
@@ -37,5 +37,6 @@
       "default": "#"
     }
   },
-  "render": "file:./render.php"
+  "render": "file:./render.php",
+  "viewScript": "file:./view.js"
 }

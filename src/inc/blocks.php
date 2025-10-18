@@ -1,6 +1,24 @@
 <?php
 
 /**
+ * Registers a custom block category for theme blocks.
+ */
+function trydo_wp_theme_bolierplate_register_block_category($categories)
+{
+    // Add custom category at the beginning of the array
+    return array_merge(
+        [
+            [
+                'slug'  => 'trydo-blocks',
+                'title' => __('Trydo Blocks', 'trydo-wp-theme-bolierplate'),
+                'icon'  => 'admin-customizer',
+            ],
+        ],
+        $categories
+    );
+}
+
+/**
  * Registers all custom blocks located under src/blocks.
  */
 function trydo_wp_theme_bolierplate_register_blocks(): void

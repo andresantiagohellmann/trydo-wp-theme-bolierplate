@@ -17,4 +17,5 @@ add_action('init', 'trydo_wp_theme_bolierplate_register_blocks');
 add_action('after_setup_theme', 'trydo_wp_theme_bolierplate_setup_theme_support');
 add_action('init', 'trydo_wp_theme_bolierplate_setup_editor_styles');
 add_filter('script_loader_tag', 'trydo_wp_theme_bolierplate_vite_force_module_type', 10, 3);
+add_filter('block_categories_all', 'trydo_wp_theme_bolierplate_register_block_category', 10, 1);
 
