@@ -1,0 +1,13 @@
+@reference "../../resources/styles/main.css";
+
+.wp-block-trydo-wp-theme-bolierplate-nav-bar {
+	@apply grid grid-cols-[auto_1fr] items-center bg-blue-500;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-nav-bar .nav-bar__logo {
+	@apply flex items-center;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-nav-bar .nav-bar__menu {
+	@apply flex items-center justify-end;
+}

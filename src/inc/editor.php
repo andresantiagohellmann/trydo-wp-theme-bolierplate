@@ -5,7 +5,15 @@
  */
 function trydo_wp_theme_bolierplate_setup_theme_support(): void
 {
-    add_theme_support('editor-styles');
+	add_theme_support('editor-styles');
+
+	add_theme_support('custom-logo', [
+		'height' => 64,
+		'width' => 240,
+		'flex-height' => true,
+		'flex-width' => true,
+		'unlink-homepage-logo' => true,
+	]);
 }
 
 /**
@@ -15,35 +23,38 @@ function trydo_wp_theme_bolierplate_setup_theme_support(): void
  */
 function trydo_wp_theme_bolierplate_vite_resolve_editor_style_urls(): array
 {
-    $manifest = trydo_wp_theme_bolierplate_vite_manifest();
+	$manifest = trydo_wp_theme_bolierplate_vite_manifest();
 
-    if (! $manifest) {
-        return [];
-    }
+	if (!$manifest) {
+		return [];
+	}
 
-    $entries = [
-        'src/resources/scripts/main.js',
-        'src/blocks/index.js',
-        'src/resources/scripts/editor.js',
-    ];
+	$entries = [
+		'src/resources/scripts/main.js',
+		'src/blocks/index.js',
+		'src/resources/scripts/editor.js',
+	];
 
-    $styles = [];
+	$styles = [];
 
-    foreach ($entries as $entry) {
-        if (empty($manifest[$entry]['css'])) {
-            continue;
-        }
+	foreach ($entries as $entry) {
+		if (empty($manifest[$entry]['css'])) {
+			continue;
+		}
 
-        foreach ($manifest[$entry]['css'] as $css) {
-            $styles[] = trydo_wp_theme_bolierplate_vite_dist_url($css);
-        }
+		foreach ($manifest[$entry]['css'] as $css) {
+			$styles[] = trydo_wp_theme_bolierplate_vite_dist_url($css);
+		}
 
-        if (! empty($manifest[$entry]['file']) && trydo_wp_theme_bolierplate_vite_asset_is_css((string) $manifest[$entry]['file'])) {
-            $styles[] = trydo_wp_theme_bolierplate_vite_dist_url($manifest[$entry]['file']);
-        }
-    }
+		if (
+			!empty($manifest[$entry]['file']) &&
+			trydo_wp_theme_bolierplate_vite_asset_is_css((string) $manifest[$entry]['file'])
+		) {
+			$styles[] = trydo_wp_theme_bolierplate_vite_dist_url($manifest[$entry]['file']);
+		}
+	}
 
-    return array_values(array_unique($styles));
+	return array_values(array_unique($styles));
 }
 
 /**
@@ -51,17 +62,17 @@ function trydo_wp_theme_bolierplate_vite_resolve_editor_style_urls(): array
  */
 function trydo_wp_theme_bolierplate_setup_editor_styles(): void
 {
-    if (trydo_wp_theme_bolierplate_vite_dev_server_origin()) {
-        return;
-    }
+	if (trydo_wp_theme_bolierplate_vite_dev_server_origin()) {
+		return;
+	}
 
-    $styles = trydo_wp_theme_bolierplate_vite_resolve_editor_style_urls();
+	$styles = trydo_wp_theme_bolierplate_vite_resolve_editor_style_urls();
 
-    if (! $styles) {
-        return;
-    }
+	if (!$styles) {
+		return;
+	}
 
-    foreach ($styles as $style) {
-        add_editor_style($style);
-    }
+	foreach ($styles as $style) {
+		add_editor_style($style);
+	}
 }

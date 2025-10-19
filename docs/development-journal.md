@@ -113,6 +113,12 @@ O `import.meta.glob` carrega automaticamente todos os arquivos CSS dos blocos, e
 4. **Load the theme in WordPress:** With the dev server online, WordPress will enqueue the live bundle instead of the built manifest. If the site can’t reach the dev URL, WordPress falls back to the last build.
 5. **Block development:** Any time you scaffold a new block under `src/blocks`, its `index.js` will be pulled into the build via `src/blocks/index.js`. Hot reloading works for both blocks and theme assets while the dev server is running.
 
+## Commit Guidelines
+
+- Write all commit messages in **English**.
+- Follow the existing Conventional Commits style (`feat:`, `fix:`, `chore:`, etc.) for clarity and automation compatibility.
+- Keep messages short and action-oriented, e.g. `chore: clean up test components and implement GSAP ScrollSmoother`.
+
 ### Troubleshooting Dev Mode
 
 - **Dev server not detected:** Check the browser console for 404s to `@vite/client`. Confirm `pnpm dev` is running and that the host/port matches any reverse proxy or Docker network you're using. Override with the `trydo_wp_theme_bolierplate_vite_dev_server_origin` filter or `WP_VITE_SERVER` env variable if needed.

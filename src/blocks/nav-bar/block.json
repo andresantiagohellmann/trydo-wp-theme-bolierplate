@@ -1,0 +1,20 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "version": "0.1.0",
+  "name": "trydo-wp-theme-bolierplate/nav-bar",
+  "title": "Barra de Navegação",
+  "category": "trydo-blocks",
+  "icon": "layout",
+  "description": "Barra de navegação fixa com logo e menu.",
+  "keywords": ["nav", "menu", "logo"],
+  "supports": {
+    "html": false,
+    "spacing": {
+      "margin": false,
+      "padding": false
+    }
+  },
+  "attributes": {},
+  "render": "file:./render.php"
+}
