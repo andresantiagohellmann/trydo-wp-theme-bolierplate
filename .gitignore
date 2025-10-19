@@ -48,3 +48,6 @@ wp-content/cache/
 *.tmp
 *.temp
 .cache
+
+# Local docs (private planning)
+docs/TODO.md

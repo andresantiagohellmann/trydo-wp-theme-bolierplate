@@ -137,6 +137,87 @@ O `import.meta.glob` carrega automaticamente todos os arquivos CSS dos blocos, e
 
 ## Common Customizations
 
+### Custom Fonts
+
+O tema suporta fontes customizadas auto-hospedadas usando `@font-face` + Tailwind v4.
+
+#### Estrutura:
+
+```
+src/resources/fonts/
+├── SpaceGrotesk-VariableFont_wght.woff2
+├── Merriweather-VariableFont_opsz,wdth,wght.woff2
+└── Merriweather-Italic-VariableFont_opsz,wdth,wght.woff2
+```
+
+#### Configuração em `main.css`:
+
+```css
+@font-face {
+	font-family: 'Space Grotesk';
+	src: url('../fonts/SpaceGrotesk-VariableFont_wght.woff2') format('woff2');
+	font-weight: 300 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+@theme {
+	/* Tailwind convention - standard font families */
+	--font-sans: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+	--font-serif: 'Merriweather', ui-serif, Georgia, serif;
+
+	/* Custom aliases - project-specific naming */
+	--font-body: var(--font-sans);
+	--font-heading: var(--font-serif);
+	--font-emphasis: var(--font-serif);
+}
+```
+
+#### Como usar:
+
+**Convenção Tailwind padrão:**
+
+```jsx
+<h1 className="font-serif text-4xl">Título</h1>
+<p className="font-sans">Corpo do texto</p>
+```
+
+**Aliases customizados:**
+
+```jsx
+<h1 className="font-heading text-4xl">Título</h1>
+<p className="font-body">Corpo do texto</p>
+<em className="font-emphasis italic">Texto em ênfase</em>
+```
+
+**Em CSS com @apply:**
+
+```css
+.my-component {
+	@apply font-body text-base;
+}
+
+.my-heading {
+	@apply font-heading text-3xl font-bold;
+}
+```
+
+#### Adicionando novas fontes:
+
+1. Baixe a fonte em `.woff2` (recomendado: [google-webfonts-helper](https://gwfh.mranftl.com/))
+2. Coloque em `src/resources/fonts/`
+3. Adicione `@font-face` em `main.css`
+4. Defina no `@theme` do Tailwind
+5. Use com classes utilitárias ou `@apply`
+
+**Vantagens desta abordagem:**
+
+- ✅ Performance máxima (zero requests externos)
+- ✅ GDPR compliant (sem conexão com Google)
+- ✅ Vite otimiza automaticamente (hashing, compressão)
+- ✅ Suporte a variable fonts
+- ✅ Cache control total
+
 ### Global Styles
 
 Edit `src/resources/styles/main.css` for front-end defaults. Tailwind utilities are available because Tailwind is imported at the top of the file.
@@ -559,6 +640,7 @@ pnpm format:check      # Verifica se arquivos estão formatados
 - **Suporte a view.js no boilerplate (Outubro 2024):** Adicionado arquivo `view.js` ao bloco boilerplate para demonstrar JavaScript interativo no front-end. O WordPress carrega automaticamente via `"viewScript": "file:./view.js"` no `block.json`, enfileirando o script apenas em páginas que contêm o bloco. Razão: Fornece exemplo prático de interatividade no front-end, separado do JavaScript do editor.
 - **Modernização das ferramentas de desenvolvimento (Outubro 2024):** Adicionado stack completo de ferramentas de qualidade de código: EditorConfig, ESLint (flat config), Prettier, Stylelint (com suporte Tailwind v4), Husky + lint-staged para pre-commit hooks, e configurações VSCode. Razão: Manter consistência de código, automatizar formatação, prevenir erros comuns, e melhorar a experiência de desenvolvimento. As ferramentas rodam automaticamente antes de cada commit via hooks, garantindo que o código sempre esteja formatado e livre de erros básicos.
 - **Auto-sort de classes Tailwind (Outubro 2024):** Adicionado `prettier-plugin-tailwindcss` e `@prettier/plugin-php` para ordenar automaticamente classes Tailwind em JSX, HTML, CSS (`@apply`) e PHP. Razão: Classes Tailwind organizadas de forma consistente facilitam a leitura e manutenção do código. O plugin segue a ordem recomendada pelo Tailwind (layout → spacing → typography → visual → etc). Funciona automaticamente no format-on-save e nos pre-commit hooks. Limitação conhecida: strings PHP não são ordenadas, apenas atributos HTML em arquivos PHP.
+- **Custom fonts com abordagem híbrida (Outubro 2024):** Implementado sistema de fontes customizadas auto-hospedadas usando `@font-face` + Tailwind v4 `@theme`. Fontes: Space Grotesk (sans-serif) e Merriweather (serif + italic). Razão: Performance máxima (zero requests externos), GDPR compliant, controle total sobre cache e otimizações. Abordagem híbrida: usa convenções Tailwind padrão (`--font-sans`, `--font-serif`) + aliases customizados (`--font-body`, `--font-heading`, `--font-emphasis`) para flexibilidade. Variable fonts suportadas para otimização de bundle size. Vite processa e otimiza automaticamente (hashing, compressão).
 
 > When you land a change that affects the build process, architecture, or conventions, append a new bullet here with the date, summary, and rationale.
 
