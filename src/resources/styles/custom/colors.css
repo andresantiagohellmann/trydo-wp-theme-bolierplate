@@ -1,0 +1,44 @@
+/* ========================================
+   Color Palette - OKLCH
+   ======================================== */
+
+@theme {
+	/* Neutral Colors */
+	--color-light: oklch(100% 0 0deg); /* White */
+	--color-dark: oklch(23% 0 0deg); /* #1a1a1a equivalent */
+
+	/* Primary - Blue (vibrant, modern) */
+	--color-primary-thin: oklch(95% 0.03 250deg);
+	--color-primary-light: oklch(80% 0.08 250deg);
+	--color-primary-regular: oklch(65% 0.15 250deg);
+	--color-primary-medium: oklch(50% 0.18 250deg);
+	--color-primary-bold: oklch(35% 0.15 250deg);
+
+	/* Secondary - Orange (warm, energetic) */
+	--color-secondary-thin: oklch(95% 0.03 50deg);
+	--color-secondary-light: oklch(80% 0.08 50deg);
+	--color-secondary-regular: oklch(68% 0.15 50deg);
+	--color-secondary-medium: oklch(55% 0.18 50deg);
+	--color-secondary-bold: oklch(40% 0.15 50deg);
+
+	/* Tertiary - Yellow (bright, optimistic) */
+	--color-tertiary-thin: oklch(95% 0.05 95deg);
+	--color-tertiary-light: oklch(88% 0.12 95deg);
+	--color-tertiary-regular: oklch(80% 0.18 95deg);
+	--color-tertiary-medium: oklch(70% 0.2 95deg);
+	--color-tertiary-bold: oklch(55% 0.18 95deg);
+
+	/* Success - Green (positive, confirmation) */
+	--color-success-thin: oklch(95% 0.03 145deg);
+	--color-success-light: oklch(85% 0.08 145deg);
+	--color-success-regular: oklch(70% 0.15 145deg);
+	--color-success-medium: oklch(55% 0.18 145deg);
+	--color-success-bold: oklch(40% 0.15 145deg);
+
+	/* Error - Red (alert, danger) */
+	--color-error-thin: oklch(95% 0.03 25deg);
+	--color-error-light: oklch(85% 0.1 25deg);
+	--color-error-regular: oklch(65% 0.2 25deg);
+	--color-error-medium: oklch(50% 0.22 25deg);
+	--color-error-bold: oklch(35% 0.18 25deg);
+}

@@ -18,6 +18,10 @@
 ## Asset & Content Structure
 
 - Global styles live in `src/resources/styles/` and scripts in `src/resources/scripts/`. `fonts/` and `images/` are reserved for static assets.
+- **Modular CSS:** Estilos customizados são organizados em `src/resources/styles/custom/`:
+    - `fonts.css` - Declarações `@font-face`
+    - `colors.css` - Paleta de cores OKLCH
+    - `typography.css` - Famílias de fontes e tamanhos fluidos
 - The main entry (`main.js`) imports Tailwind and block styles; the editor entry keeps the block editor in sync.
 - Block-specific assets sit in `src/blocks/<block-name>/` alongside their `block.json`, `edit.js`, `editor.css`, and `render.php`.
 - The theme stylesheet header (`src/style.css`) is the authoritative source for theme metadata (name, text domain, etc.).
@@ -136,6 +140,141 @@ O `import.meta.glob` carrega automaticamente todos os arquivos CSS dos blocos, e
 4. Commit the new `/dist` artifacts only if the deployment process requires them (otherwise they can be generated during deployment).
 
 ## Common Customizations
+
+### Color Palette - OKLCH
+
+O tema usa um sistema de cores moderno baseado em **OKLCH** (perceptualmente uniforme) com 3 paletas principais + 2 cores neutras.
+
+#### Paleta de Cores:
+
+**Cores Neutras:**
+
+- `light` - Branco (#ffffff)
+- `dark` - Preto escuro (#1a1a1a)
+
+**Primary (Blue - vibrant, modern):**
+
+- `primary-thin` - oklch(95% 0.03 250) - Background suave
+- `primary-light` - oklch(80% 0.08 250) - Hover states
+- `primary-regular` - oklch(65% 0.15 250) - **Cor base**
+- `primary-medium` - oklch(50% 0.18 250) - CTAs importantes
+- `primary-bold` - oklch(35% 0.15 250) - Textos escuros
+
+**Secondary (Orange - warm, energetic):**
+
+- `secondary-thin` - oklch(95% 0.03 50)
+- `secondary-light` - oklch(80% 0.08 50)
+- `secondary-regular` - oklch(68% 0.15 50) - **Cor base**
+- `secondary-medium` - oklch(55% 0.18 50)
+- `secondary-bold` - oklch(40% 0.15 50)
+
+**Tertiary (Yellow - bright, optimistic):**
+
+- `tertiary-thin` - oklch(95% 0.05 95)
+- `tertiary-light` - oklch(88% 0.12 95)
+- `tertiary-regular` - oklch(80% 0.18 95) - **Cor base**
+- `tertiary-medium` - oklch(70% 0.20 95)
+- `tertiary-bold` - oklch(55% 0.18 95)
+
+**Success (Green - positive, confirmation):**
+
+- `success-thin` - oklch(95% 0.03 145)
+- `success-light` - oklch(85% 0.08 145)
+- `success-regular` - oklch(70% 0.15 145) - **Cor base**
+- `success-medium` - oklch(55% 0.18 145)
+- `success-bold` - oklch(40% 0.15 145)
+
+**Error (Red - alert, danger):**
+
+- `error-thin` - oklch(95% 0.03 25)
+- `error-light` - oklch(85% 0.10 25)
+- `error-regular` - oklch(65% 0.20 25) - **Cor base**
+- `error-medium` - oklch(50% 0.22 25)
+- `error-bold` - oklch(35% 0.18 25)
+
+#### Como usar:
+
+**No Tailwind (blocos customizados):**
+
+```jsx
+<button className="bg-primary-regular text-light hover:bg-primary-medium">
+  Botão Primary
+</button>
+
+<div className="bg-secondary-thin text-secondary-bold">
+  Card com cores secundárias
+</div>
+```
+
+**No WordPress Editor (blocos nativos):**
+
+- As cores aparecem no painel de cores do editor
+- Classes geradas automaticamente: `has-primary-regular-background-color`, `has-primary-regular-color`
+
+**Em CSS:**
+
+```css
+.my-component {
+	background-color: var(--color-primary-regular);
+	color: var(--color-light);
+}
+```
+
+#### Vantagens do OKLCH:
+
+- ✅ Cores mais vibrantes e precisas
+- ✅ Perceptualmente uniforme (transições suaves)
+- ✅ Suporte a wide-gamut displays
+- ✅ Melhor contraste e acessibilidade
+
+### Fluid Typography - Sistema Responsivo
+
+O tema implementa **tipografia fluida** usando `clamp()` do CSS, que escala automaticamente entre viewports.
+
+#### Tamanhos de Fonte:
+
+| Nome        | Slug      | Mobile (320px)  | Desktop (1600px+) | Fórmula clamp()                         |
+| ----------- | --------- | --------------- | ----------------- | --------------------------------------- |
+| Small       | `small`   | 0.875rem (14px) | 1rem (16px)       | `clamp(0.875rem, 0.8rem + 0.4vw, 1rem)` |
+| Medium      | `medium`  | 1rem (16px)     | 1.125rem (18px)   | `clamp(1rem, 0.9rem + 0.5vw, 1.125rem)` |
+| Large       | `large`   | 1.5rem (24px)   | 2rem (32px)       | `clamp(1.5rem, 1.2rem + 1vw, 2rem)`     |
+| Extra Large | `x-large` | 2rem (32px)     | 3rem (48px)       | `clamp(2rem, 1.5rem + 2vw, 3rem)`       |
+
+#### Como usar:
+
+**No Tailwind (blocos customizados):**
+
+```jsx
+<p className="text-small">Texto pequeno responsivo</p>
+<h2 className="text-large">Heading responsivo</h2>
+<h1 className="text-x-large">Hero title responsivo</h1>
+```
+
+**No WordPress Editor (blocos nativos):**
+
+- Aparece no dropdown de tamanhos de fonte
+- Classes geradas: `has-small-font-size`, `has-medium-font-size`, etc.
+
+**Em CSS:**
+
+```css
+.my-text {
+	font-size: var(--font-size-medium);
+}
+```
+
+#### Como funciona:
+
+- **Mobile** (≤ 768px): Usa o tamanho mínimo
+- **Tablet/Desktop** (768px - 1600px): Escala fluida usando `vw`
+- **Large Desktop** (≥ 1600px): Usa o tamanho máximo (evita textos gigantes)
+
+#### Vantagens:
+
+- ✅ Zero media queries necessárias
+- ✅ Escala perfeita em qualquer dispositivo
+- ✅ Suporte nativo do WordPress 6.1+
+- ✅ Performance otimizada (CSS puro)
 
 ### Custom Fonts
 
@@ -641,6 +780,8 @@ pnpm format:check      # Verifica se arquivos estão formatados
 - **Modernização das ferramentas de desenvolvimento (Outubro 2024):** Adicionado stack completo de ferramentas de qualidade de código: EditorConfig, ESLint (flat config), Prettier, Stylelint (com suporte Tailwind v4), Husky + lint-staged para pre-commit hooks, e configurações VSCode. Razão: Manter consistência de código, automatizar formatação, prevenir erros comuns, e melhorar a experiência de desenvolvimento. As ferramentas rodam automaticamente antes de cada commit via hooks, garantindo que o código sempre esteja formatado e livre de erros básicos.
 - **Auto-sort de classes Tailwind (Outubro 2024):** Adicionado `prettier-plugin-tailwindcss` e `@prettier/plugin-php` para ordenar automaticamente classes Tailwind em JSX, HTML, CSS (`@apply`) e PHP. Razão: Classes Tailwind organizadas de forma consistente facilitam a leitura e manutenção do código. O plugin segue a ordem recomendada pelo Tailwind (layout → spacing → typography → visual → etc). Funciona automaticamente no format-on-save e nos pre-commit hooks. Limitação conhecida: strings PHP não são ordenadas, apenas atributos HTML em arquivos PHP.
 - **Custom fonts com abordagem híbrida (Outubro 2024):** Implementado sistema de fontes customizadas auto-hospedadas usando `@font-face` + Tailwind v4 `@theme`. Fontes: Space Grotesk (sans-serif) e Merriweather (serif + italic). Razão: Performance máxima (zero requests externos), GDPR compliant, controle total sobre cache e otimizações. Abordagem híbrida: usa convenções Tailwind padrão (`--font-sans`, `--font-serif`) + aliases customizados (`--font-body`, `--font-heading`, `--font-emphasis`) para flexibilidade. Variable fonts suportadas para otimização de bundle size. Vite processa e otimiza automaticamente (hashing, compressão).
+- **Integração Tailwind v4 + theme.json com OKLCH e fluid typography (Outubro 2024):** Implementado sistema completo de cores e tipografia sincronizado entre Tailwind e WordPress. Paleta OKLCH com 5 cores principais (primary blue, secondary orange, tertiary yellow, success green, error red) × 5 shades cada (thin/light/regular/medium/bold) + 2 cores neutras (light/dark). Total: 27 cores. Tipografia fluida com 4 tamanhos responsivos usando `clamp()` (small/medium/large/x-large). Razão: theme.json define cores e fontes para blocos nativos do WordPress (parágrafo, heading), enquanto Tailwind v4 usa as mesmas variáveis via `@theme` para blocos customizados. OKLCH escolhido por cores mais vibrantes, perceptualmente uniformes e wide-gamut. Fluid typography elimina media queries e escala perfeitamente entre mobile (320px) e desktop (1600px+). Ambos sincronizados manualmente mas com convenção clara de nomes para manter consistência.
+- **Organização modular de estilos customizados (Outubro 2024):** Criado `src/resources/styles/custom/` com arquivos separados para fonts.css, colors.css e typography.css, importados no main.css. Razão: Melhor organização, manutenção facilitada, separação de responsabilidades (cada arquivo cuida de uma concern específica). Permite editar cores, fontes ou tipografia sem mexer em um arquivo gigante. Facilita onboarding de novos desenvolvedores e versionamento mais claro.
 
 > When you land a change that affects the build process, architecture, or conventions, append a new bullet here with the date, summary, and rationale.
 

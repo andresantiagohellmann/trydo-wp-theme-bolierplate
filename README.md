@@ -229,6 +229,100 @@ Install recommended extensions:
 
 Settings are automatically applied from `.vscode/settings.json`.
 
+## 🎨 Customizing Colors and Fonts
+
+### Changing Colors
+
+Colors are centralized in `src/resources/styles/custom/colors.css` using **OKLCH** color space.
+
+**To change a color:**
+
+1. Open `src/resources/styles/custom/colors.css`
+2. Edit the OKLCH values (format: `oklch(lightness% chroma hue)`)
+3. Update the corresponding value in `src/theme.json` (for WordPress editor support)
+
+**Example - Changing primary color:**
+
+```css
+/* colors.css */
+--color-primary-regular: oklch(65% 0.15 250); /* Blue */
+/* Change to purple: */
+--color-primary-regular: oklch(65% 0.15 300);
+```
+
+```json
+/* theme.json */
+{
+	"slug": "primary-regular",
+	"color": "oklch(65% 0.15 300)",
+	"name": "Primary"
+}
+```
+
+**OKLCH Parameters:**
+
+- **Lightness**: 0-100% (0% = black, 100% = white)
+- **Chroma**: 0-0.4 (saturation intensity)
+- **Hue**: 0-360 (color wheel angle)
+
+**Tool:** Use [oklch.com](https://oklch.com) to pick colors visually
+
+### Changing Fonts
+
+Fonts are configured in `src/resources/styles/custom/fonts.css` and `typography.css`.
+
+**To add/change fonts:**
+
+1. **Download font files** (`.woff2` format recommended)
+    - Use [google-webfonts-helper](https://gwfh.mranftl.com/) for Google Fonts
+
+2. **Place files in** `src/resources/fonts/`
+
+3. **Add `@font-face` declaration** in `src/resources/styles/custom/fonts.css`:
+
+```css
+@font-face {
+	font-family: 'Your Font Name';
+	src: url('../../fonts/YourFont-Variable.woff2') format('woff2');
+	font-weight: 300 700;
+	font-style: normal;
+	font-display: swap;
+}
+```
+
+4. **Update Tailwind config** in `src/resources/styles/custom/typography.css`:
+
+```css
+@theme {
+	--font-sans: 'Your Font Name', ui-sans-serif, system-ui, sans-serif;
+}
+```
+
+5. **Update WordPress config** in `src/theme.json`:
+
+```json
+{
+	"fontFamily": "'Your Font Name', ui-sans-serif, system-ui, sans-serif",
+	"name": "Your Font Name",
+	"slug": "body"
+}
+```
+
+6. **Build** to apply changes: `pnpm build`
+
+### Color Palette Structure
+
+The theme includes **27 colors** organized in 5 categories:
+
+- **Neutrals**: `light`, `dark`
+- **Primary** (Blue): `thin`, `light`, `regular`, `medium`, `bold`
+- **Secondary** (Orange): `thin`, `light`, `regular`, `medium`, `bold`
+- **Tertiary** (Yellow): `thin`, `light`, `regular`, `medium`, `bold`
+- **Success** (Green): `thin`, `light`, `regular`, `medium`, `bold`
+- **Error** (Red): `thin`, `light`, `regular`, `medium`, `bold`
+
+All colors are synchronized between Tailwind CSS and WordPress `theme.json`.
+
 ## 📖 Documentation
 
 Comprehensive documentation is available in `docs/development-journal.md`:
@@ -236,6 +330,7 @@ Comprehensive documentation is available in `docs/development-journal.md`:
 - Theme architecture
 - CSS Cascade Layers strategy
 - Block development guide
+- Color palette and typography system
 - Troubleshooting common issues
 - Decision log with rationale
 

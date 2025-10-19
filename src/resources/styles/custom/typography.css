@@ -1,0 +1,36 @@
+/* ========================================
+   Typography - Font Families & Sizes
+   ======================================== */
+
+@theme {
+	/* ========================================
+	   Font Families
+	   ======================================== */
+
+	/* Tailwind convention - standard font families */
+	--font-sans:
+		'Space Grotesk', ui-sans-serif, system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI',
+		roboto, 'Helvetica Neue', arial, sans-serif;
+	--font-serif: 'Merriweather', ui-serif, georgia, cambria, 'Times New Roman', times, serif;
+
+	/* Custom aliases - project-specific naming */
+	--font-body: var(--font-sans);
+	--font-heading: var(--font-serif);
+	--font-emphasis: var(--font-serif);
+
+	/* ========================================
+	   Font Sizes - Fluid Typography
+	   ======================================== */
+
+	/* Small - P */
+	--font-size-small: clamp(0.875rem, 0.8rem + 0.4vw, 1rem);
+
+	/* Medium - M */
+	--font-size-medium: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+
+	/* Large - G */
+	--font-size-large: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+
+	/* Extra Large - GG */
+	--font-size-x-large: clamp(2rem, 1.5rem + 2vw, 3rem);
+}

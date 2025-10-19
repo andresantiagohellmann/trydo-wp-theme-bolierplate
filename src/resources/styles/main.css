@@ -1,42 +1,11 @@
 @import 'tailwindcss';
 
-/* Custom Fonts */
-@font-face {
-	font-family: 'Space Grotesk';
-	src: url('../fonts/SpaceGrotesk-VariableFont_wght.woff2') format('woff2');
-	font-weight: 300 700;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: Merriweather;
-	src: url('../fonts/Merriweather-VariableFont_opsz,wdth,wght.woff2') format('woff2');
-	font-weight: 300 900;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: Merriweather;
-	src: url('../fonts/Merriweather-Italic-VariableFont_opsz,wdth,wght.woff2') format('woff2');
-	font-weight: 300 900;
-	font-style: italic;
-	font-display: swap;
-}
-
-@theme {
-	/* Tailwind convention - standard font families */
-	--font-sans:
-		'Space Grotesk', ui-sans-serif, system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI',
-		roboto, 'Helvetica Neue', arial, sans-serif;
-	--font-serif: 'Merriweather', ui-serif, georgia, cambria, 'Times New Roman', times, serif;
-
-	/* Custom aliases - project-specific naming */
-	--font-body: var(--font-sans);
-	--font-heading: var(--font-serif);
-	--font-emphasis: var(--font-serif);
-}
+/* ========================================
+   Custom Styles - Modular Imports
+   ======================================== */
+@import './custom/fonts.css';
+@import './custom/colors.css';
+@import './custom/typography.css';
 
 @layer theme {
 	body {
