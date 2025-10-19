@@ -38,6 +38,10 @@ function watchPhpReloadPlugin() {
 
 export default defineConfig({
 	plugins: [tailwindcss(), watchPhpReloadPlugin()],
+	base:
+		process.env.NODE_ENV === 'production'
+			? '/wp-content/themes/trydo-wp-theme-bolierplate/dist/'
+			: '/',
 	server: {
 		host,
 		port,
