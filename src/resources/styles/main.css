@@ -7,9 +7,14 @@
 @import './custom/colors.css';
 @import './custom/typography.css';
 @import './custom/spacing.css';
+@import './custom/scroll-smoother.css';
 
 @layer theme {
 	body {
 		@apply font-body bg-green-100;
+	}
+
+	#smooth-wrapper {
+		margin: 0 !important;
 	}
 }

@@ -1,0 +1,36 @@
+/**
+ * ScrollSmoother Styles
+ * Estilos essenciais para o GSAP ScrollSmoother
+ */
+
+@layer theme {
+	/* Oculta o scroll nativo apenas no front-end */
+	body.smooth-scroll-enabled {
+		overflow: hidden;
+	}
+
+	/* Remove margin do bloco HTML do WordPress que contém o wrapper */
+	.wp-block-html:has(#smooth-wrapper) {
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+
+	/* Wrapper fixo que ocupa toda a viewport */
+	#smooth-wrapper {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+		margin: 0;
+		padding: 0;
+	}
+
+	/* Container do conteúdo que será animado pelo ScrollSmoother */
+	#smooth-content {
+		width: 100%;
+		overflow: visible;
+		will-change: transform;
+	}
+}

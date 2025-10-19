@@ -9,6 +9,7 @@ require_once __DIR__ . '/inc/assets.php';
 require_once __DIR__ . '/inc/editor.php';
 require_once __DIR__ . '/inc/blocks.php';
 require_once __DIR__ . '/inc/analytics.php';
+require_once __DIR__ . '/inc/smooth-scroll.php';
 
 // Load vendors bundle first with high priority (lower number = higher priority)
 add_action('wp_enqueue_scripts', 'trydo_wp_theme_bolierplate_enqueue_vendors', 5);

@@ -1,9 +1,23 @@
 <!-- wp:template-part {"slug":"header","tagName":"header"} /-->
 
-<!-- wp:group {"tagName":"main","layout":{"type":"flow"}} -->
-<main class="wp-block-group">
-	<!-- wp:post-content /-->
-</main>
-<!-- /wp:group -->
+<!-- wp:html -->
+<div id="smooth-wrapper">
+	<div id="smooth-content">
+		<!-- /wp:html -->
 
-<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->
+		<!-- wp:group {"tagName":"main","layout":{"type":"flow"}} -->
+		<main class="wp-block-group">
+			<!-- wp:post-content /-->
+		</main>
+		<!-- /wp:group -->
+
+		<!-- wp:group {"tagName":"main","layout":{"type":"flow"}} -->
+		<div class="wp-block-group h-screen bg-red-500">tste</div>
+		<!-- /wp:group -->
+
+		<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->
+
+		<!-- wp:html -->
+	</div>
+</div>
+<!-- /wp:html -->
