@@ -54,6 +54,7 @@ function trydo_wp_theme_bolierplate_register_blocks(): void
 			};
 		}
 
+		// Register the block
 		$result = register_block_type_from_metadata($block_dir, $args);
 
 		if (is_wp_error($result)) {
@@ -64,23 +65,74 @@ function trydo_wp_theme_bolierplate_register_blocks(): void
 					$result->get_error_message(),
 				),
 			);
+			continue;
+		}
+
+		// Add vendors as dependency to block scripts
+		trydo_wp_theme_bolierplate_add_vendors_as_dependency($result);
+	}
+}
+
+/**
+ * Adds vendors bundle as a dependency to registered block scripts.
+ *
+ * @param WP_Block_Type $block_type The registered block type object.
+ */
+function trydo_wp_theme_bolierplate_add_vendors_as_dependency($block_type): void
+{
+	$vendors_handle = 'trydo-wp-theme-bolierplate-vendors';
+
+	// Add vendors as dependency to editor_script
+	if (!empty($block_type->editor_script)) {
+		trydo_wp_theme_bolierplate_add_script_dependency(
+			$block_type->editor_script,
+			$vendors_handle,
+		);
+	}
+
+	// Add vendors as dependency to script (runs in both editor and frontend)
+	if (!empty($block_type->script)) {
+		trydo_wp_theme_bolierplate_add_script_dependency($block_type->script, $vendors_handle);
+	}
+
+	// Add vendors as dependency to view_script (frontend only)
+	if (!empty($block_type->view_script)) {
+		trydo_wp_theme_bolierplate_add_script_dependency($block_type->view_script, $vendors_handle);
+	}
+}
+
+/**
+ * Adds a dependency to a registered script handle(s).
+ *
+ * @param string|array $handles Script handle or array of handles.
+ * @param string $dependency Dependency handle to add.
+ */
+function trydo_wp_theme_bolierplate_add_script_dependency($handles, string $dependency): void
+{
+	if (!is_array($handles)) {
+		$handles = [$handles];
+	}
+
+	foreach ($handles as $handle) {
+		$script = wp_scripts()->query($handle, 'registered');
+
+		if ($script && !in_array($dependency, $script->deps, true)) {
+			$script->deps[] = $dependency;
 		}
 	}
 }
 
 /**
- * Ensures block scripts have vendors bundle as dependency.
+ * Ensures block scripts have vendors bundle as dependency (legacy filter-based approach).
+ * This is kept for backwards compatibility but the new approach uses direct dependency injection.
  */
 function trydo_wp_theme_bolierplate_add_vendors_dependency_to_blocks($metadata)
 {
 	// If block has a script (runs in both editor and front-end) or viewScript (front-end only),
-	// ensure vendors bundle is loaded first
+	// ensure vendors bundle is loaded first by making it a dependency
 	if (!empty($metadata['script']) || !empty($metadata['viewScript'])) {
-		// Enqueue on front-end
-		add_action('wp_enqueue_scripts', 'trydo_wp_theme_bolierplate_enqueue_vendors', 5);
-
-		// Enqueue in block editor
-		add_action('enqueue_block_editor_assets', 'trydo_wp_theme_bolierplate_enqueue_vendors', 5);
+		// Make sure vendors is enqueued first
+		trydo_wp_theme_bolierplate_enqueue_vendors();
 	}
 
 	return $metadata;

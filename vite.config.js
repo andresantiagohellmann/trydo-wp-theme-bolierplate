@@ -36,8 +36,39 @@ function watchPhpReloadPlugin() {
 	};
 }
 
+function watchBlockScriptsPlugin() {
+	return {
+		name: 'watch-block-scripts-reload',
+		configureServer(server) {
+			// Watch interactive.js and view.js files in blocks
+			const interactiveGlob = path.resolve(themeRoot, 'blocks/*/interactive.js');
+			const viewGlob = path.resolve(themeRoot, 'blocks/*/view.js');
+
+			server.watcher.add([interactiveGlob, viewGlob]);
+
+			const triggerReload = (file) => {
+				// Only reload if it's a block script file
+				if (
+					file.includes('/blocks/') &&
+					(file.endsWith('/interactive.js') || file.endsWith('/view.js'))
+				) {
+					console.log(
+						`[HMR] Block script changed: ${path.basename(path.dirname(file))}/${path.basename(file)}`
+					);
+					server.ws.send({
+						type: 'full-reload',
+						path: '*',
+					});
+				}
+			};
+
+			server.watcher.on('change', triggerReload);
+		},
+	};
+}
+
 export default defineConfig({
-	plugins: [tailwindcss(), watchPhpReloadPlugin()],
+	plugins: [tailwindcss(), watchPhpReloadPlugin(), watchBlockScriptsPlugin()],
 	base:
 		process.env.NODE_ENV === 'production'
 			? '/wp-content/themes/trydo-wp-theme-bolierplate/dist/'

@@ -45,6 +45,7 @@ function trydo_wp_theme_bolierplate_enqueue_vendors(): void
 
 /**
  * Loads the Vite block editor bundle ensuring Tailwind styles are present in the editor.
+ * Note: Vendors bundle is now loaded via hooks with priority 5 in functions.php
  */
 function trydo_wp_theme_bolierplate_enqueue_block_editor_assets(): void
 {
@@ -172,6 +173,8 @@ function trydo_wp_theme_bolierplate_vite_enqueue_from_manifest(
 
 		$handle = 'trydo-wp-theme-bolierplate-style-' . md5($css);
 
+		// Use wp_enqueue_style which works for both frontend and editor contexts
+		// WordPress will automatically handle adding it to the editor iframe
 		wp_enqueue_style($handle, trydo_wp_theme_bolierplate_vite_dist_url($css), [], null);
 
 		$styles[$css] = true;
@@ -181,7 +184,7 @@ function trydo_wp_theme_bolierplate_vite_enqueue_from_manifest(
 		return;
 	}
 
-	$handle = $script_handle ?? 'trydo-wp-theme-bolierplate-script-' . md5($item['file']);
+	$handle = $script_handle ?? 'trydo_wp_theme_bolierplate-script-' . md5($item['file']);
 
 	$script_deps = $script_handle ? $deps : [];
 

@@ -161,15 +161,24 @@ export { gsap, ScrollTrigger };
 **3. Use in your blocks:**
 
 ```javascript
-// src/blocks/my-block/view.js
-const { gsap } = window.ThemeVendors;
+// src/blocks/my-block/interactive.js or view.js
+(function () {
+	'use strict';
 
-document.addEventListener('DOMContentLoaded', () => {
-	gsap.to('.my-element', {
-		opacity: 1,
-		duration: 1,
+	const { gsap } = window.ThemeVendors || {};
+
+	if (!gsap) {
+		console.warn('GSAP not available. Vendors bundle may not be loaded.');
+		return;
+	}
+
+	document.addEventListener('DOMContentLoaded', () => {
+		gsap.to('.my-element', {
+			opacity: 1,
+			duration: 1,
+		});
 	});
-});
+})();
 ```
 
 ### Benefits
@@ -177,13 +186,57 @@ document.addEventListener('DOMContentLoaded', () => {
 - ✅ **Zero duplication** - Libraries loaded once, shared across all blocks
 - ✅ **Simple workflow** - Just `pnpm add` and import in vendors.js
 - ✅ **Performance** - Browser caches vendors bundle separately
-- ✅ **HMR support** - Hot reload works in development
+- ✅ **Auto dependency injection** - Vendors bundle automatically loaded before block scripts
+- ✅ **Full HMR support** - Hot reload works for all block scripts in development
 
 ### Currently Included
 
 - **GSAP** - Animation library with ScrollTrigger plugin
 
 See the boilerplate block for a working example with GSAP animations!
+
+## ⚡ Hot Module Replacement (HMR)
+
+This theme includes **full HMR support** for all file types:
+
+### What Gets Hot Reloaded
+
+- ✅ **Block JSX components** (`edit.jsx`) - Instant updates in editor
+- ✅ **Block styles** (`style.css`, `editor.css`) - Real-time CSS changes
+- ✅ **Block scripts** (`interactive.js`, `view.js`) - Full page reload on change
+- ✅ **PHP templates** (`render.php`, etc.) - Full page reload on change
+- ✅ **Vendors bundle** (`vendors.js`) - Full page reload on change
+
+### Block Scripts HMR
+
+The theme includes a custom Vite plugin that watches `interactive.js` and `view.js` files:
+
+```javascript
+// vite.config.js includes watchBlockScriptsPlugin()
+// Automatically reloads page when block scripts change
+```
+
+**How it works:**
+
+1. Edit any `src/blocks/*/interactive.js` or `view.js` file
+2. Vite detects the change and triggers a full page reload
+3. See changes instantly in both editor and frontend
+4. Console log shows: `[HMR] Block script changed: your-block/interactive.js`
+
+### Best Practices
+
+- **Use IIFE** to avoid global scope pollution:
+    ```javascript
+    (function () {
+    	'use strict';
+    	// Your code here
+    })();
+    ```
+- **Check for dependencies** before using them:
+    ```javascript
+    const { gsap } = window.ThemeVendors || {};
+    if (!gsap) return;
+    ```
 
 ## 🔧 Code Quality Tools
 

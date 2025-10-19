@@ -1,0 +1,54 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "version": "0.1.0",
+  "name": "trydo-wp-theme-bolierplate/header-navigation",
+  "title": "Header com Navegação",
+  "category": "trydo-blocks",
+  "icon": "menu",
+  "description": "Cabeçalho responsivo com logo, links de navegação e CTA.",
+  "keywords": ["header", "menu", "navigation", "cta"],
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"],
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "attributes": {
+    "align": {
+      "type": "string",
+      "default": "full"
+    },
+    "logoText": {
+      "type": "string",
+      "default": "Trydo"
+    },
+    "logoUrl": {
+      "type": "string",
+      "default": "/"
+    },
+    "ctaLabel": {
+      "type": "string",
+      "default": "Fale conosco"
+    },
+    "ctaUrl": {
+      "type": "string",
+      "default": "#"
+    },
+    "menuItems": {
+      "type": "array",
+      "default": [
+        { "id": "item-1", "label": "Início", "url": "#" },
+        { "id": "item-2", "label": "Serviços", "url": "#" },
+        { "id": "item-3", "label": "Portfólio", "url": "#" },
+        { "id": "item-4", "label": "Contato", "url": "#" }
+      ]
+    }
+  },
+  "render": "file:./render.php",
+  "viewScript": "file:./interactive.js",
+  "style": "file:./style.css",
+  "editorStyle": "file:./editor.css"
+}

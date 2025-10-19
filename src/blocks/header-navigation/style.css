@@ -1,0 +1,63 @@
+@reference "../../resources/styles/main.css";
+
+.wp-block-trydo-wp-theme-bolierplate-header-navigation {
+	@apply fixed top-0 left-0 w-full;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-header-navigation__inner {
+	@apply mx-auto flex w-full max-w-6xl items-center justify-between gap-8 px-6 py-5 md:px-8;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-header-navigation.alignfull
+	.wp-block-trydo-wp-theme-bolierplate-header-navigation__inner {
+	@apply max-w-full;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-header-navigation__logo {
+	@apply font-heading text-dark hover:text-primary-medium focus-visible:ring-primary-regular inline-flex items-center gap-2 text-lg font-semibold transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-header-navigation__logo-text {
+	@apply leading-none;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-header-navigation__toggle {
+	@apply border-primary-medium text-primary-medium hover:bg-primary-thin focus-visible:ring-primary-regular inline-flex h-11 w-11 items-center justify-center rounded-full border transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 md:hidden;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-header-navigation__toggle-bar {
+	@apply block h-0.5 w-6 bg-current transition duration-200;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-header-navigation__toggle-bar
+	+ .wp-block-trydo-wp-theme-bolierplate-header-navigation__toggle-bar {
+	@apply mt-1.5;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-header-navigation__collapsible {
+	@apply border-primary-thin hidden w-full flex-col gap-4 border-t pt-4 md:flex md:w-auto md:flex-row md:items-center md:gap-6 md:border-t-0 md:pt-0;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-header-navigation__collapsible[data-state='open'] {
+	@apply flex;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-header-navigation__menu {
+	@apply flex flex-col gap-4 md:flex-row md:items-center md:gap-6;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-header-navigation__menu-item {
+	@apply list-none;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-header-navigation__menu-link {
+	@apply text-dark hover:text-primary-medium focus-visible:ring-primary-regular inline-flex items-center text-base font-medium transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-header-navigation__cta {
+	@apply bg-primary-regular text-light hover:bg-primary-medium focus-visible:ring-primary-regular inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-semibold transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-header-navigation__cta-label {
+	@apply leading-none;
+}
