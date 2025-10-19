@@ -323,6 +323,13 @@ The theme includes **27 colors** organized in 5 categories:
 
 All colors are synchronized between Tailwind CSS and WordPress `theme.json`.
 
+## 📊 Analytics Snippets
+
+- Acesse **Aparência → Analytics** para colar snippets de rastreamento sem plugins externos.
+- Há campos separados para o cabeçalho (`wp_head`) e para o rodapé (`wp_footer`); cole os trechos conforme a instrução do provedor (Gtag, Meta Pixel, Matomo, etc.).
+- Por padrão, os códigos só carregam quando o ambiente é produção (`wp_get_environment_type()`), mas você pode desmarcar a opção ou alterar via filtro `trydo_wp_theme_bolierplate_allow_analytics`.
+- Use a action `do_action( 'trydo_wp_theme_bolierplate_analytics', 'head' | 'footer' )` para reinjetar os snippets manualmente após consentimento ou para extensões de privacidade.
+
 ## 📖 Documentation
 
 Comprehensive documentation is available in `docs/development-journal.md`:
