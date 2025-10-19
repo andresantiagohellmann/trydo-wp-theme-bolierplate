@@ -16,6 +16,10 @@
     }
   },
   "attributes": {
+    "align": {
+      "type": "string",
+      "default": "full"
+    },
     "title": {
       "type": "string",
       "default": "Título do bloco"
@@ -34,5 +38,6 @@
     }
   },
   "render": "file:./render.php",
+  "script": "file:./interactive.js",
   "viewScript": "file:./view.js"
 }

@@ -6,6 +6,7 @@
 @import './custom/fonts.css';
 @import './custom/colors.css';
 @import './custom/typography.css';
+@import './custom/spacing.css';
 
 @layer theme {
 	body {

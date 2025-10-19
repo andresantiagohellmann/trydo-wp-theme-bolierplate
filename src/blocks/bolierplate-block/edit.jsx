@@ -15,10 +15,10 @@ const BLOCK_CLASS = 'wp-block-trydo-wp-theme-bolierplate-bolierplate-block';
  * @param {Function} props.setAttributes
  */
 export default function Edit({ attributes, setAttributes }) {
-	const { title, description, linkLabel, linkUrl } = attributes;
+	const { title, description, linkLabel, linkUrl, align } = attributes;
 
 	const blockProps = useBlockProps({
-		className: BLOCK_CLASS,
+		className: `${BLOCK_CLASS} ${align ? `align${align}` : ''}`,
 	});
 
 	return (

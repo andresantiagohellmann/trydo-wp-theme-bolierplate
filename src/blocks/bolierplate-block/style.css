@@ -5,6 +5,16 @@
 	@apply relative flex flex-col gap-4 rounded-2xl bg-white p-8 shadow-lg shadow-slate-200 transition dark:bg-slate-900 dark:shadow-slate-950;
 }
 
+.alignfull.wp-block-trydo-wp-theme-bolierplate-bolierplate-block {
+	@apply w-full;
+}
+
+.alignwide.wp-block-trydo-wp-theme-bolierplate-bolierplate-block {
+	max-width: var(--wp--style--wide-size, 1000px);
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .wp-block-trydo-wp-theme-bolierplate-bolierplate-block__title {
 	@apply font-heading text-3xl font-bold text-slate-900 dark:text-white;
 }

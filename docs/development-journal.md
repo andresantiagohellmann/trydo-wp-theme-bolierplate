@@ -527,9 +527,44 @@ export default function Edit({ attributes, setAttributes }) {
 </div>
 ```
 
-#### 8. Crie o `view.js` (opcional, para interatividade no front-end):
+#### 8. Adicione JavaScript interativo (opcional):
 
-O `view.js` adiciona JavaScript interativo ao bloco no front-end (não afeta o editor).
+O WordPress block.json suporta 3 tipos de scripts com diferentes contextos de execução:
+
+| Campo            | Executa quando?          | Casos de uso                                                                     |
+| ---------------- | ------------------------ | -------------------------------------------------------------------------------- |
+| `"script"`       | ✅ Editor + ✅ Front-end | Animações, hovers, interações visuais que devem funcionar no editor              |
+| `"viewScript"`   | ❌ Editor + ✅ Front-end | Alerts, analytics, modals - interações disruptivas que NÃO devem rodar no editor |
+| `"editorScript"` | ✅ Editor + ❌ Front-end | Controles customizados do editor, transformações de blocos                       |
+
+**Exemplo 1: `interactive.js` (roda em ambos os contextos)**
+
+Crie `src/blocks/meu-bloco/interactive.js` para código que deve funcionar no editor E no front-end:
+
+```javascript
+const BLOCK_CLASS = 'wp-block-trydo-wp-theme-bolierplate-meu-novo-bloco';
+
+document.addEventListener('DOMContentLoaded', () => {
+	// Acessa GSAP do vendors bundle
+	const { gsap } = window.ThemeVendors || {};
+
+	if (!gsap) {
+		console.warn('GSAP not available. Vendors bundle may not be loaded.');
+		return;
+	}
+
+	const blocks = document.querySelectorAll(`.${BLOCK_CLASS}`);
+
+	blocks.forEach((block) => {
+		// ✅ Animações funcionam no editor (para preview)
+		gsap.fromTo(block, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6 });
+	});
+});
+```
+
+**Exemplo 2: `view.js` (roda apenas no front-end)**
+
+Crie `src/blocks/meu-bloco/view.js` para código que NÃO deve rodar no editor:
 
 ```javascript
 const BLOCK_CLASS = 'wp-block-trydo-wp-theme-bolierplate-meu-novo-bloco';
@@ -542,31 +577,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		if (!button) return;
 
-		button.addEventListener('click', (event) => {
-			// Adicione sua lógica aqui
+		button.addEventListener('click', () => {
+			// ❌ Alerts são disruptivos, não devem rodar no editor
 			alert('Botão clicado!');
+
+			// ❌ Analytics não deve rodar no editor
+			// if (window.gtag) {
+			//   gtag('event', 'click', { event_category: 'CTA' });
+			// }
 		});
 	});
 });
 ```
 
-**Não esqueça de declarar no `block.json`:**
+**Configure no `block.json`:**
 
 ```json
 {
 	"render": "file:./render.php",
+	"script": "file:./interactive.js",
 	"viewScript": "file:./view.js"
 }
 ```
 
-**Casos de uso para `view.js`:**
+**Quando usar cada arquivo:**
 
-- Carrosséis/sliders
-- Tabs/accordions
-- Modais/lightboxes
-- Animações on scroll
-- Validação de formulários
-- Analytics/tracking
+- **`interactive.js`**: Animações, hovers, transições visuais (funciona no editor para preview)
+- **`view.js`**: Alerts, modals, analytics, tracking, validações (não deve rodar no editor)
+
+**IMPORTANTE:** Se você usa bibliotecas externas (como GSAP), acesse-as via `window.ThemeVendors`:
+
+```javascript
+const { gsap } = window.ThemeVendors || {};
+```
+
+O tema garante que o vendors bundle seja carregado antes dos scripts dos blocos, tanto no editor quanto no front-end
 
 **Pronto!** O bloco será automaticamente reconhecido e carregado. Não é necessário editar `src/blocks/index.js`, `main.js` ou `editor.js`.
 

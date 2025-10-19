@@ -1,82 +1,56 @@
 /**
- * Front-end JavaScript for the Boilerplate Block.
+ * Front-end only JavaScript for the Boilerplate Block.
  *
- * This script handles interactivity on the front-end (not in the editor).
- * It runs only on pages that contain this block.
+ * This script runs ONLY on the front-end (not in the editor).
+ * Use this file for features that should NOT run in the editor:
+ * - Analytics tracking
+ * - Modal/popup triggers
+ * - External API calls
+ * - Navigation/redirects
+ * - Any disruptive user interactions
  *
- * Uses GSAP from the vendors bundle for animations.
+ * For features that work in both contexts, use interactive.js instead.
  */
 
 const BLOCK_CLASS = 'wp-block-trydo-wp-theme-bolierplate-bolierplate-block';
 
 /**
- * Initialize block interactivity when DOM is ready.
+ * Initialize click actions (alerts, modals, tracking, etc).
+ * ❌ Runs ONLY on front-end (not in editor).
+ *
+ * @param {HTMLElement} ctaButton - The button element
+ */
+function initClickActions(ctaButton) {
+	ctaButton.addEventListener('click', () => {
+		// Example: Alert (disruptive, shouldn't run in editor)
+		alert('Clicou! (Este alert só aparece no front-end, não no editor)');
+
+		// Example: Track analytics
+		// if (window.gtag) {
+		//   gtag('event', 'click', { event_category: 'CTA', event_label: 'Boilerplate Block' });
+		// }
+
+		// Example: Open modal
+		// openModal('contact-form');
+
+		// Example: External API call
+		// fetch('/api/track-click', { method: 'POST', body: JSON.stringify({ block: 'boilerplate' }) });
+	});
+}
+
+/**
+ * Initialize front-end only features when DOM is ready.
  */
 document.addEventListener('DOMContentLoaded', () => {
-	// Access GSAP from the vendors bundle
-	const { gsap } = window.ThemeVendors || {};
-
-	if (!gsap) {
-		console.warn('GSAP not available. Vendors bundle may not be loaded.');
-		return;
-	}
-
 	// Find all instances of this block on the page
 	const blocks = document.querySelectorAll(`.${BLOCK_CLASS}`);
 
 	blocks.forEach((block) => {
-		const title = block.querySelector(`.${BLOCK_CLASS}__title`);
-		const description = block.querySelector(`.${BLOCK_CLASS}__description`);
 		const ctaButton = block.querySelector(`.${BLOCK_CLASS}__button`);
 
-		// Subtle entrance animation for the block and its content.
-		gsap.fromTo(
-			block,
-			{ opacity: 0, y: 16 },
-			{
-				opacity: 1,
-				y: 0,
-				duration: 0.6,
-				ease: 'power1.out',
-				clearProps: 'opacity,transform',
-			}
-		);
-
-		const contentElements = [title, description, ctaButton].filter(Boolean);
-
-		if (contentElements.length > 0) {
-			gsap.fromTo(
-				contentElements,
-				{ opacity: 0, y: 12 },
-				{
-					opacity: 1,
-					y: 0,
-					duration: 0.4,
-					delay: 0.1,
-					stagger: 0.12,
-					ease: 'power1.out',
-					clearProps: 'opacity,transform',
-				}
-			);
-		}
-
-		// Gentle hover feedback on the CTA button.
 		if (ctaButton) {
-			ctaButton.addEventListener('mouseenter', () => {
-				gsap.to(ctaButton, {
-					scale: 1.04,
-					duration: 0.2,
-					ease: 'power1.out',
-				});
-			});
-
-			ctaButton.addEventListener('mouseleave', () => {
-				gsap.to(ctaButton, {
-					scale: 1,
-					duration: 0.2,
-					ease: 'power1.out',
-				});
-			});
+			// ❌ FRONT-END ONLY: These features don't run in the editor
+			initClickActions(ctaButton);
 		}
 	});
 });

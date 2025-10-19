@@ -69,13 +69,18 @@ function trydo_wp_theme_bolierplate_register_blocks(): void
 }
 
 /**
- * Ensures block view scripts have vendors bundle as dependency.
+ * Ensures block scripts have vendors bundle as dependency.
  */
 function trydo_wp_theme_bolierplate_add_vendors_dependency_to_blocks($metadata)
 {
-	// If block has a viewScript, ensure vendors is loaded first
-	if (!empty($metadata['viewScript'])) {
+	// If block has a script (runs in both editor and front-end) or viewScript (front-end only),
+	// ensure vendors bundle is loaded first
+	if (!empty($metadata['script']) || !empty($metadata['viewScript'])) {
+		// Enqueue on front-end
 		add_action('wp_enqueue_scripts', 'trydo_wp_theme_bolierplate_enqueue_vendors', 5);
+
+		// Enqueue in block editor
+		add_action('enqueue_block_editor_assets', 'trydo_wp_theme_bolierplate_enqueue_vendors', 5);
 	}
 
 	return $metadata;

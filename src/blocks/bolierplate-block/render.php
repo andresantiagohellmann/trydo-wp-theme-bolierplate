@@ -9,41 +9,37 @@
  * @return string
  */
 
-$title       = $attributes['title'] ?? '';
+$title = $attributes['title'] ?? '';
 $description = $attributes['description'] ?? '';
-$link_label  = $attributes['linkLabel'] ?? '';
-$link_url    = $attributes['linkUrl'] ?? '#';
+$link_label = $attributes['linkLabel'] ?? '';
+$link_url = $attributes['linkUrl'] ?? '#';
 
-$wrapper_attributes = get_block_wrapper_attributes(
-	array(
-		'class' => 'wp-block-trydo-wp-theme-bolierplate-bolierplate-block',
-	)
-);
+$wrapper_attributes = get_block_wrapper_attributes([
+	'class' => 'wp-block-trydo-wp-theme-bolierplate-bolierplate-block alignfull',
+]);
 
 ob_start();
 ?>
 <div <?php echo $wrapper_attributes; ?>>
-	<?php if ( $title ) : ?>
+	<?php if ($title): ?>
 		<h3 class="wp-block-trydo-wp-theme-bolierplate-bolierplate-block__title">
-			<?php echo esc_html( $title ); ?>
+			<?php echo esc_html($title); ?>
 		</h3>
 	<?php endif; ?>
 
-	<?php if ( $description ) : ?>
+	<?php if ($description): ?>
 		<p class="wp-block-trydo-wp-theme-bolierplate-bolierplate-block__description">
-			<?php echo wp_kses_post( $description ); ?>
+			<?php echo wp_kses_post($description); ?>
 		</p>
 	<?php endif; ?>
 
-	<?php if ( $link_label ) : ?>
+	<?php if ($link_label): ?>
 		<a
 			class="wp-block-trydo-wp-theme-bolierplate-bolierplate-block__button"
-			href="<?php echo esc_url( $link_url ?: '#' ); ?>"
+			href="<?php echo esc_url($link_url ?: '#'); ?>"
 		>
-			<?php echo esc_html( $link_label ); ?>
+			<?php echo esc_html($link_label); ?>
 		</a>
 	<?php endif; ?>
 </div>
-<?php
-
-return ob_get_clean();
+<?php return ob_get_clean();
