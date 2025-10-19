@@ -1,7 +1,7 @@
 @reference "../../resources/styles/main.css";
 
 .wp-block-trydo-wp-theme-bolierplate-nav-bar {
-	@apply grid grid-cols-[auto_1fr] items-center bg-blue-500;
+	@apply mt-4 bg-white;
 }
 
 .wp-block-trydo-wp-theme-bolierplate-nav-bar .nav-bar__logo {

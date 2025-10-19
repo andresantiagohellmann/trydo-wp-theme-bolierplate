@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<ruleset name="Trydo WordPress Theme">
+	<description>PHP CodeSniffer ruleset for WordPress theme</description>
+
+	<!-- What to scan -->
+	<file>./src</file>
+
+	<!-- Exclude patterns -->
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/dist/*</exclude-pattern>
+
+	<!-- Show progress -->
+	<arg value="ps"/>
+	<arg name="colors"/>
+	<arg name="extensions" value="php"/>
+	<arg name="parallel" value="8"/>
+
+	<!-- Rules -->
+	<rule ref="PSR12">
+		<!-- Allow tabs instead of spaces for WordPress -->
+		<exclude name="Generic.WhiteSpace.DisallowTabIndent"/>
+	</rule>
+
+	<!-- Use tabs for indentation -->
+	<arg name="tab-width" value="4"/>
+
+	<!-- Additional rules for clean code -->
+	<rule ref="Generic.WhiteSpace.ScopeIndent">
+		<properties>
+			<property name="indent" value="4"/>
+			<property name="tabIndent" value="true"/>
+		</properties>
+	</rule>
+
+	<rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+	<rule ref="Generic.Formatting.MultipleStatementAlignment"/>
+	<rule ref="Generic.Formatting.SpaceAfterCast"/>
+	<rule ref="Generic.Formatting.SpaceAfterNot"/>
+	<rule ref="Generic.Functions.FunctionCallArgumentSpacing"/>
+	<rule ref="Generic.PHP.LowerCaseConstant"/>
+	<rule ref="Generic.PHP.LowerCaseKeyword"/>
+	<rule ref="Generic.WhiteSpace.ArbitraryParenthesesSpacing"/>
+	<rule ref="Squiz.WhiteSpace.SuperfluousWhitespace">
+		<properties>
+			<property name="ignoreBlankLines" value="false"/>
+		</properties>
+	</rule>
+</ruleset>

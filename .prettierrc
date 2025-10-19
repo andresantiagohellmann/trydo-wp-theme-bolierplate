@@ -16,6 +16,20 @@
         "useTabs": false,
         "tabWidth": 2
       }
+    },
+    {
+      "files": ["*.php"],
+      "options": {
+        "parser": "php",
+        "phpVersion": "8.0",
+        "trailingCommaPHP": true,
+        "braceStyle": "psr-2",
+        "singleQuote": false,
+        "useTabs": true,
+        "tabWidth": 4,
+        "htmlWhitespaceSensitivity": "ignore",
+        "printWidth": 100
+      }
     }
   ]
 }

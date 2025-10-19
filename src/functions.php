@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Theme bootstrap file responsible for integrating Vite.
  */

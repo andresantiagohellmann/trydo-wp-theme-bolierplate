@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ScrollSmoother integration for GSAP
  * Simple setup - HTML structure is defined in templates

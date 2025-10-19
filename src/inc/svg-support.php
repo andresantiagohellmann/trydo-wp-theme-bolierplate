@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Secure SVG Upload Support
  *
@@ -12,6 +13,7 @@
  * Allow SVG uploads in WordPress media library
  *
  * @param array $mimes Existing allowed MIME types.
+ *
  * @return array Modified MIME types with SVG support.
  */
 function trydo_wp_theme_allow_svg_upload($mimes)
@@ -34,6 +36,7 @@ function trydo_wp_theme_allow_svg_upload($mimes)
  * malicious scripts and dangerous elements.
  *
  * @param array $file Uploaded file data.
+ *
  * @return array Modified file data or error.
  */
 function trydo_wp_theme_sanitize_svg_upload($file)
@@ -79,6 +82,7 @@ function trydo_wp_theme_sanitize_svg_upload($file)
  * Sanitize SVG content by removing dangerous elements and attributes
  *
  * @param string $svg_content Raw SVG content.
+ *
  * @return string|false Sanitized SVG content or false on failure.
  */
 function trydo_wp_theme_sanitize_svg_content($svg_content)
@@ -273,10 +277,11 @@ function trydo_wp_theme_sanitize_svg_content($svg_content)
  * WordPress does a secondary MIME type check that can fail for SVGs.
  * This function fixes that issue.
  *
- * @param array  $data File data.
+ * @param array $data File data.
  * @param string $file File path.
  * @param string $filename File name.
- * @param array  $mimes Allowed MIME types.
+ * @param array $mimes Allowed MIME types.
+ *
  * @return array Modified file data.
  */
 function trydo_wp_theme_fix_svg_mime_type($data, $file, $filename, $mimes)
@@ -294,9 +299,10 @@ function trydo_wp_theme_fix_svg_mime_type($data, $file, $filename, $mimes)
 /**
  * Add SVG preview in media library
  *
- * @param string $response   Default response.
+ * @param string $response Default response.
  * @param object $attachment Attachment object.
- * @param array  $meta       Attachment meta data.
+ * @param array $meta Attachment meta data.
+ *
  * @return string Modified response with SVG preview.
  */
 function trydo_wp_theme_svg_media_preview($response, $attachment, $meta)
@@ -329,7 +335,8 @@ function trydo_wp_theme_svg_media_preview($response, $attachment, $meta)
  * Display SVG thumbnails in media library
  *
  * @param string $content Default content.
- * @param int    $post_id Post ID.
+ * @param int $post_id Post ID.
+ *
  * @return string Modified content with SVG display.
  */
 function trydo_wp_theme_svg_thumbnail_display($content, $post_id)
@@ -350,8 +357,9 @@ function trydo_wp_theme_svg_thumbnail_display($content, $post_id)
 /**
  * Add SVG dimensions metadata
  *
- * @param array  $metadata      Attachment metadata.
- * @param int    $attachment_id Attachment ID.
+ * @param array $metadata Attachment metadata.
+ * @param int $attachment_id Attachment ID.
+ *
  * @return array Modified metadata.
  */
 function trydo_wp_theme_svg_metadata($metadata, $attachment_id)

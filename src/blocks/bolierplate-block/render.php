@@ -2,9 +2,9 @@
 /**
  * Server-side render for the Boilerplate Block.
  *
- * @param array    $attributes Block attributes.
- * @param string   $content    Block content (unused because it is dynamic).
- * @param WP_Block $block      Block instance.
+ * @param array $attributes Block attributes.
+ * @param string $content Block content (unused because it is dynamic).
+ * @param WP_Block $block Block instance.
  *
  * @return string
  */

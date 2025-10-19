@@ -1,6 +1,13 @@
 {
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[php]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "php-cs-fixer.executablePath": "${workspaceFolder}/vendor/bin/php-cs-fixer",
+  "php-cs-fixer.onsave": false,
+  "php-cs-fixer.config": ".php-cs-fixer.php",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
     "source.fixAll.stylelint": "explicit"
@@ -23,12 +30,16 @@
     "**/.DS_Store": true,
     "**/node_modules": true,
     "**/.pnpm-store": true,
-    "**/dist": true
+    "**/dist": true,
+    "**/vendor": true,
+    "**/.php-cs-fixer.cache": true
   },
   "search.exclude": {
     "**/node_modules": true,
     "**/.pnpm-store": true,
     "**/dist": true,
-    "**/pnpm-lock.yaml": true
+    "**/pnpm-lock.yaml": true,
+    "**/vendor": true,
+    "**/composer.lock": true
   }
 }

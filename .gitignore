@@ -1,6 +1,8 @@
 # Dependencies
 node_modules
 .pnpm-store
+vendor
+composer.lock
 
 # Build outputs
 dist
@@ -48,6 +50,7 @@ wp-content/cache/
 *.tmp
 *.temp
 .cache
+.php-cs-fixer.cache
 
 # Local docs (private planning)
 docs/TODO.md

@@ -7,6 +7,7 @@
     "editorconfig.editorconfig",
     "christian-kohler.path-intellisense",
     "zignd.html-css-class-completion",
-    "bmewburn.vscode-intelephense-client"
+    "bmewburn.vscode-intelephense-client",
+    "junstyle.php-cs-fixer"
   ]
 }

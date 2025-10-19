@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 
+@theme {
+	--breakpoint-lg: 1170px;
+	--breakpoint-xl: 1320px;
+}
+
 /* ========================================
    Custom Styles - Modular Imports
    ======================================== */

@@ -339,22 +339,22 @@ function trydo_wp_theme_bolierplate_render_analytics_settings_page(): void
 		<form action="<?php echo esc_url(admin_url('options.php')); ?>" method="post">
 			<?php
    settings_fields('trydo_wp_theme_bolierplate_analytics');
-   do_settings_sections('trydo_wp_theme_bolierplate_analytics');
-   submit_button(__('Salvar configurações', 'trydo-wp-theme-bolierplate'));
-   ?>
+	do_settings_sections('trydo_wp_theme_bolierplate_analytics');
+	submit_button(__('Salvar configurações', 'trydo-wp-theme-bolierplate'));
+	?>
 		</form>
 		<hr>
 		<p>
 			<?php esc_html_e(
-   	'Use o filtro "trydo_wp_theme_bolierplate_allow_analytics" para controlar quando o snippet é exibido (ideal para consent mode).',
-   	'trydo-wp-theme-bolierplate',
-   ); ?>
+				'Use o filtro "trydo_wp_theme_bolierplate_allow_analytics" para controlar quando o snippet é exibido (ideal para consent mode).',
+				'trydo-wp-theme-bolierplate',
+			); ?>
 		</p>
 		<p>
 			<?php esc_html_e(
-   	'Você também pode usar a action "trydo_wp_theme_bolierplate_analytics" passando "head" ou "footer" para acionar a renderização manualmente.',
-   	'trydo-wp-theme-bolierplate',
-   ); ?>
+				'Você também pode usar a action "trydo_wp_theme_bolierplate_analytics" passando "head" ou "footer" para acionar a renderização manualmente.',
+				'trydo-wp-theme-bolierplate',
+			); ?>
 		</p>
 	</div>
 	<?php
@@ -383,7 +383,7 @@ function trydo_wp_theme_bolierplate_should_render_analytics(): bool
 	 *
 	 * This enables consent management flows to disable analytics until the user agrees.
 	 *
-	 * @param bool  $allowed  Whether analytics are allowed.
+	 * @param bool $allowed Whether analytics are allowed.
 	 * @param array $settings Current analytics settings.
 	 */
 	$allowed = apply_filters('trydo_wp_theme_bolierplate_allow_analytics', true, $settings);
@@ -414,8 +414,8 @@ function trydo_wp_theme_bolierplate_render_analytics_snippet(): void
 	/**
 	 * Filter the final analytics snippet before rendering.
 	 *
-	 * @param string $snippet  Analytics snippet contents.
-	 * @param array  $settings Current analytics settings.
+	 * @param string $snippet Analytics snippet contents.
+	 * @param array $settings Current analytics settings.
 	 */
 	$snippet = apply_filters('trydo_wp_theme_bolierplate_analytics_snippet', $snippet, $settings);
 
@@ -453,8 +453,8 @@ function trydo_wp_theme_bolierplate_maybe_render_analytics_in_footer(): void
 /**
  * Retrieves the snippet for the given context.
  *
- * @param string $context  Either 'head' or 'footer'.
- * @param array  $settings Current analytics settings.
+ * @param string $context Either 'head' or 'footer'.
+ * @param array $settings Current analytics settings.
  */
 function trydo_wp_theme_bolierplate_get_snippet_by_context($context, array $settings): string
 {
