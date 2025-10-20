@@ -8,6 +8,7 @@ composer.lock
 dist
 dist-ssr
 *.local
+godev/
 
 # Logs
 logs

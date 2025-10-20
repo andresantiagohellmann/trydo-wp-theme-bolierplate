@@ -83,6 +83,25 @@ pnpm lint:css          # Lint CSS only
 pnpm format            # Format all files with Prettier
 pnpm production        # Build assets and create production zip in ./production
 pnpm format:check      # Check if files are formatted
+pnpm scaffold          # Generate godev/<slug> with renamed starter
+```
+
+## 🚀 Clone This Starter
+
+Use o scaffolding para gerar um novo projeto sem modificar o boilerplate original:
+
+```bash
+pnpm scaffold
+```
+
+O assistente pergunta slug, nome, autor e bloco, copia o tema para `godev/<slug>` e ajusta prefixos (text domain, funções PHP, handles). O diretório gerado inclui um README resumido e um `.env.example` com host/port do Vite.
+
+Depois é só entrar na nova pasta e seguir o fluxo padrão:
+
+```bash
+cd godev/<slug>
+pnpm install
+pnpm dev
 ```
 
 ## 🧱 Creating a New Block
