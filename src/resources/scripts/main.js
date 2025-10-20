@@ -14,3 +14,6 @@ import '@phosphor-icons/web/duotone';
 
 // Initialize ScrollSmoother for smooth scrolling (front-end only)
 import './scroll-smoother.js';
+
+// Initialize nav-bar pin with hide/show behavior
+import './nav-bar-pin.js';
