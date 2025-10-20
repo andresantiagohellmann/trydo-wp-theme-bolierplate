@@ -55,10 +55,34 @@
     "menuItems": {
       "type": "array",
       "default": [
-        { "label": "Home", "isBold": true },
-        { "label": "Sobre", "isBold": false },
-        { "label": "Serviços", "isBold": false },
-        { "label": "Contato", "isBold": false }
+        {
+          "label": "Home",
+          "isBold": true,
+          "url": "",
+          "linkType": "internal",
+          "openInNewTab": false
+        },
+        {
+          "label": "Sobre",
+          "isBold": false,
+          "url": "",
+          "linkType": "internal",
+          "openInNewTab": false
+        },
+        {
+          "label": "Serviços",
+          "isBold": false,
+          "url": "",
+          "linkType": "internal",
+          "openInNewTab": false
+        },
+        {
+          "label": "Contato",
+          "isBold": false,
+          "url": "",
+          "linkType": "internal",
+          "openInNewTab": false
+        }
       ]
     },
     "showLanguageToggle": {

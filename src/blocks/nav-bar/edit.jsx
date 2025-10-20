@@ -1,6 +1,7 @@
 const { __ } = wp.i18n;
 const { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } = wp.blockEditor;
-const { PanelBody, ToggleControl, TextControl, Button, BaseControl, RangeControl } = wp.components;
+const { PanelBody, ToggleControl, TextControl, Button, BaseControl, RangeControl, SelectControl } =
+	wp.components;
 const { Fragment } = wp.element;
 
 const BLOCK_CLASS = 'wp-block-trydo-wp-theme-bolierplate-nav-bar';
@@ -73,7 +74,16 @@ export default function Edit({ attributes, setAttributes }) {
 
 	const addMenuItem = () => {
 		setAttributes({
-			menuItems: [...menuItems, { label: 'Novo Item', isBold: false }],
+			menuItems: [
+				...menuItems,
+				{
+					label: 'Novo Item',
+					isBold: false,
+					url: '',
+					linkType: 'internal',
+					openInNewTab: false,
+				},
+			],
 		});
 	};
 
@@ -220,6 +230,43 @@ export default function Edit({ attributes, setAttributes }) {
 								label={__('Bold', 'trydo-wp-theme-bolierplate')}
 								checked={item.isBold}
 								onChange={(value) => updateMenuItem(index, 'isBold', value)}
+							/>
+							<SelectControl
+								label={__('Link Type', 'trydo-wp-theme-bolierplate')}
+								value={item.linkType || 'internal'}
+								options={[
+									{
+										label: __('WordPress Page', 'trydo-wp-theme-bolierplate'),
+										value: 'internal',
+									},
+									{
+										label: __('External URL', 'trydo-wp-theme-bolierplate'),
+										value: 'external',
+									},
+								]}
+								onChange={(value) => updateMenuItem(index, 'linkType', value)}
+							/>
+							<TextControl
+								label={__('URL', 'trydo-wp-theme-bolierplate')}
+								value={item.url || ''}
+								onChange={(value) => updateMenuItem(index, 'url', value)}
+								type="url"
+								help={
+									item.linkType === 'internal'
+										? __(
+												'Ex: /sobre, /servicos, /',
+												'trydo-wp-theme-bolierplate'
+											)
+										: __(
+												'Ex: https://exemplo.com',
+												'trydo-wp-theme-bolierplate'
+											)
+								}
+							/>
+							<ToggleControl
+								label={__('Open in New Tab', 'trydo-wp-theme-bolierplate')}
+								checked={item.openInNewTab || false}
+								onChange={(value) => updateMenuItem(index, 'openInNewTab', value)}
 							/>
 							<Button
 								onClick={() => removeMenuItem(index)}
