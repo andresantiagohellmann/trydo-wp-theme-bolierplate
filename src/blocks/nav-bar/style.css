@@ -2,7 +2,7 @@
 
 /* Container */
 .wp-block-trydo-wp-theme-bolierplate-nav-bar__the-container {
-	@apply grid grid-cols-[auto_1fr] items-center gap-8 py-12;
+	@apply font-body grid grid-cols-[auto_1fr] items-center gap-8 py-12;
 }
 
 /* Brand */
@@ -76,7 +76,7 @@
 
 /* Nav Content */
 .wp-block-trydo-wp-theme-bolierplate-nav-bar__nav-content {
-	@apply lg:text-light flex flex-col rounded-xl bg-black/5 p-4 lg:flex-row lg:gap-8 lg:bg-black/5 lg:p-2 lg:pl-8 lg:backdrop-blur-2xl dark:bg-white/5;
+	@apply lg:text-light flex flex-col rounded-xl bg-black/5 p-4 lg:flex-row lg:gap-8 lg:bg-black/50 lg:p-2 lg:pl-8 lg:backdrop-blur-2xl dark:bg-white/5;
 }
 
 /* Menu */
