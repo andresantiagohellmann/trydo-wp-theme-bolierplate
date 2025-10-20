@@ -33,6 +33,9 @@ pnpm dev
 
 # Build for production
 pnpm build
+
+# Build zip for deployment
+pnpm production
 ```
 
 ## 📂 Project Structure
@@ -78,6 +81,7 @@ pnpm lint              # Run all linters (ESLint + Stylelint)
 pnpm lint:js           # Lint JavaScript/JSX only
 pnpm lint:css          # Lint CSS only
 pnpm format            # Format all files with Prettier
+pnpm production        # Build assets and create production zip in ./production
 pnpm format:check      # Check if files are formatted
 ```
 
