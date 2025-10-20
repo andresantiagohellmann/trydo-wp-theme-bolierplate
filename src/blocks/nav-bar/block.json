@@ -16,5 +16,6 @@
     }
   },
   "attributes": {},
-  "render": "file:./render.php"
+  "render": "file:./render.php",
+  "script": "file:./interactive.js"
 }

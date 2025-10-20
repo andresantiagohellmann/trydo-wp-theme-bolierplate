@@ -8,11 +8,11 @@
 	--color-dark: oklch(23% 0 0deg); /* #1a1a1a equivalent */
 
 	/* Primary - Blue (vibrant, modern) */
-	--color-primary-thin: oklch(95% 0.03 250deg);
-	--color-primary-light: oklch(80% 0.08 250deg);
-	--color-primary-regular: oklch(65% 0.15 250deg);
-	--color-primary-medium: oklch(50% 0.18 250deg);
-	--color-primary-bold: oklch(35% 0.15 250deg);
+	--color-primary-thin: oklch(85.7% 0.071 275.13deg);
+	--color-primary-light: oklch(57.5% 0.234 259.95deg);
+	--color-primary-regular: oklch(44.7% 0.183 260.02deg);
+	--color-primary-medium: oklch(32.6% 0.132 259.91deg);
+	--color-primary-bold: oklch(20.2% 0.083 260.01deg);
 
 	/* Secondary - Orange (warm, energetic) */
 	--color-secondary-thin: oklch(95% 0.03 50deg);
@@ -29,11 +29,11 @@
 	--color-tertiary-bold: oklch(55% 0.18 95deg);
 
 	/* Success - Green (positive, confirmation) */
-	--color-success-thin: oklch(95% 0.03 145deg);
-	--color-success-light: oklch(85% 0.08 145deg);
-	--color-success-regular: oklch(70% 0.15 145deg);
-	--color-success-medium: oklch(55% 0.18 145deg);
-	--color-success-bold: oklch(40% 0.15 145deg);
+	--color-success-thin: oklch(91.5% 0.121 169.01deg);
+	--color-success-light: oklch(77.1% 0.142 169.09deg);
+	--color-success-regular: oklch(59.1% 0.109 168.84deg);
+	--color-success-medium: oklch(40.6% 0.075 168.88deg);
+	--color-success-bold: oklch(22.6% 0.041 170.08deg);
 
 	/* Error - Red (alert, danger) */
 	--color-error-thin: oklch(95% 0.03 25deg);

@@ -53,7 +53,7 @@ export function initScrollSmoother() {
 	// Expose smoother instance globally for debugging
 	if (import.meta.env.DEV) {
 		window.smoother = smoother;
-		console.log('ScrollSmoother initialized:', smoother);
+		// console.log('ScrollSmoother initialized:', smoother);
 	}
 
 	return smoother;
