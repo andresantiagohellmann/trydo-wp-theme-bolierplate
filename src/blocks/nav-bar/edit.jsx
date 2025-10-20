@@ -1,8 +1,14 @@
 const { __ } = wp.i18n;
-const { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } = wp.blockEditor;
-const { PanelBody, ToggleControl, TextControl, Button, BaseControl, RangeControl, SelectControl } =
+const {
+	useBlockProps,
+	InspectorControls,
+	MediaUpload,
+	MediaUploadCheck,
+	__experimentalLinkControl: LinkControl,
+} = wp.blockEditor;
+const { PanelBody, ToggleControl, TextControl, Button, BaseControl, RangeControl, Popover } =
 	wp.components;
-const { Fragment } = wp.element;
+const { Fragment, useState, useRef } = wp.element;
 
 const BLOCK_CLASS = 'wp-block-trydo-wp-theme-bolierplate-nav-bar';
 
@@ -79,9 +85,10 @@ export default function Edit({ attributes, setAttributes }) {
 				{
 					label: 'Novo Item',
 					isBold: false,
-					url: '',
-					linkType: 'internal',
-					openInNewTab: false,
+					link: {
+						url: '',
+						opensInNewTab: false,
+					},
 				},
 			],
 		});
@@ -91,6 +98,11 @@ export default function Edit({ attributes, setAttributes }) {
 		const newMenuItems = menuItems.filter((_, i) => i !== index);
 		setAttributes({ menuItems: newMenuItems });
 	};
+
+	const [linkPickerIndex, setLinkPickerIndex] = useState(null);
+	const linkPickerButtonRef = useRef(null);
+
+	const closeLinkPicker = () => setLinkPickerIndex(null);
 
 	return (
 		<Fragment>
@@ -212,71 +224,139 @@ export default function Edit({ attributes, setAttributes }) {
 					title={__('Menu Items', 'trydo-wp-theme-bolierplate')}
 					initialOpen={false}
 				>
-					{menuItems.map((item, index) => (
-						<div
-							key={index}
-							style={{
-								marginBottom: '15px',
-								paddingBottom: '15px',
-								borderBottom: '1px solid #ddd',
-							}}
-						>
-							<TextControl
-								label={__(`Item ${index + 1} Label`, 'trydo-wp-theme-bolierplate')}
-								value={item.label}
-								onChange={(value) => updateMenuItem(index, 'label', value)}
-							/>
-							<ToggleControl
-								label={__('Bold', 'trydo-wp-theme-bolierplate')}
-								checked={item.isBold}
-								onChange={(value) => updateMenuItem(index, 'isBold', value)}
-							/>
-							<SelectControl
-								label={__('Link Type', 'trydo-wp-theme-bolierplate')}
-								value={item.linkType || 'internal'}
-								options={[
-									{
-										label: __('WordPress Page', 'trydo-wp-theme-bolierplate'),
-										value: 'internal',
-									},
-									{
-										label: __('External URL', 'trydo-wp-theme-bolierplate'),
-										value: 'external',
-									},
-								]}
-								onChange={(value) => updateMenuItem(index, 'linkType', value)}
-							/>
-							<TextControl
-								label={__('URL', 'trydo-wp-theme-bolierplate')}
-								value={item.url || ''}
-								onChange={(value) => updateMenuItem(index, 'url', value)}
-								type="url"
-								help={
-									item.linkType === 'internal'
-										? __(
-												'Ex: /sobre, /servicos, /',
-												'trydo-wp-theme-bolierplate'
-											)
-										: __(
-												'Ex: https://exemplo.com',
-												'trydo-wp-theme-bolierplate'
-											)
-								}
-							/>
-							<ToggleControl
-								label={__('Open in New Tab', 'trydo-wp-theme-bolierplate')}
-								checked={item.openInNewTab || false}
-								onChange={(value) => updateMenuItem(index, 'openInNewTab', value)}
-							/>
-							<Button
-								onClick={() => removeMenuItem(index)}
-								variant="link"
-								isDestructive
+					{menuItems.map((item, index) => {
+						const currentLink = {
+							url: '',
+							opensInNewTab: false,
+							...(item.link || {}),
+						};
+
+						const isLinkPickerOpen = linkPickerIndex === index;
+
+						return (
+							<div
+								key={index}
+								style={{
+									marginBottom: '15px',
+									paddingBottom: '15px',
+									borderBottom: '1px solid #ddd',
+								}}
 							>
-								{__('Remove Item', 'trydo-wp-theme-bolierplate')}
-							</Button>
-						</div>
-					))}
+								<TextControl
+									label={__(
+										`Item ${index + 1} Label`,
+										'trydo-wp-theme-bolierplate'
+									)}
+									value={item.label}
+									onChange={(value) => updateMenuItem(index, 'label', value)}
+								/>
+								<ToggleControl
+									label={__('Bold', 'trydo-wp-theme-bolierplate')}
+									checked={item.isBold}
+									onChange={(value) => updateMenuItem(index, 'isBold', value)}
+								/>
+								<BaseControl
+									label={__('Link', 'trydo-wp-theme-bolierplate')}
+									help={__(
+										'Search for a page or enter a custom URL',
+										'trydo-wp-theme-bolierplate'
+									)}
+								>
+									<div
+										style={{
+											display: 'flex',
+											flexDirection: 'column',
+											gap: '8px',
+										}}
+									>
+										<div>
+											<Button
+												ref={(node) => {
+													if (isLinkPickerOpen && node) {
+														linkPickerButtonRef.current = node;
+													}
+												}}
+												variant="secondary"
+												onClick={() =>
+													setLinkPickerIndex(
+														isLinkPickerOpen ? null : index
+													)
+												}
+												aria-expanded={isLinkPickerOpen}
+											>
+												{currentLink.url
+													? __('Edit link', 'trydo-wp-theme-bolierplate')
+													: __('Add link', 'trydo-wp-theme-bolierplate')}
+											</Button>
+											{isLinkPickerOpen && (
+												<Popover
+													position="middle right"
+													onClose={closeLinkPicker}
+													anchor={linkPickerButtonRef.current}
+												>
+													<LinkControl
+														value={currentLink}
+														onChange={(newLink) => {
+															updateMenuItem(index, 'link', newLink);
+														}}
+														settings={[
+															{
+																id: 'opensInNewTab',
+																title: __(
+																	'Open in new tab',
+																	'trydo-wp-theme-bolierplate'
+																),
+															},
+														]}
+													/>
+												</Popover>
+											)}
+										</div>
+										{currentLink.url ? (
+											<div style={{ fontSize: '12px', color: '#50575e' }}>
+												<strong>
+													{__(
+														'Current URL:',
+														'trydo-wp-theme-bolierplate'
+													)}
+												</strong>{' '}
+												<span style={{ wordBreak: 'break-word' }}>
+													{currentLink.url}
+												</span>
+											</div>
+										) : (
+											<div style={{ fontSize: '12px', color: '#50575e' }}>
+												{__(
+													'No link selected yet.',
+													'trydo-wp-theme-bolierplate'
+												)}
+											</div>
+										)}
+										{currentLink.url && (
+											<Button
+												variant="link"
+												onClick={() => {
+													updateMenuItem(index, 'link', {
+														url: '',
+														opensInNewTab: currentLink.opensInNewTab,
+													});
+												}}
+											>
+												{__('Clear link', 'trydo-wp-theme-bolierplate')}
+											</Button>
+										)}
+									</div>
+								</BaseControl>
+								<Button
+									onClick={() => removeMenuItem(index)}
+									variant="link"
+									isDestructive
+								>
+									{__('Remove Item', 'trydo-wp-theme-bolierplate')}
+								</Button>
+							</div>
+						);
+					})}
 					<Button onClick={addMenuItem} variant="secondary">
 						{__('Add Menu Item', 'trydo-wp-theme-bolierplate')}
 					</Button>

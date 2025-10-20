@@ -90,10 +90,13 @@ ob_start();
                         )
 							? 'wp-block-trydo-wp-theme-bolierplate-nav-bar__menu-item--bold'
 							: ''; ?>">
-                            <?php if (!empty($item['url'])): ?>
-                                <a href="<?php echo esc_url($item['url']); ?>" <?php echo !empty(
-                                	$item['openInNewTab']
-                                )
+                            <?php
+                        	$link = $item['link'] ?? null;
+                        	$has_url = !empty($link['url']);
+                        	$opens_in_new_tab = !empty($link['opensInNewTab']);
+                        	?>
+                            <?php if ($has_url): ?>
+                                <a href="<?php echo esc_url($link['url']); ?>" <?php echo $opens_in_new_tab
                         			? 'target="_blank" rel="noopener noreferrer"'
                         			: ''; ?>>
                                     <?php echo esc_html($item['label']); ?>
