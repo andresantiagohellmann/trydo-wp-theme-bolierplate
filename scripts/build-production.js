@@ -56,6 +56,24 @@ const copyFileIfExists = async (source, destination) => {
 	await fs.copyFile(source, destination);
 };
 
+const processHtmlFile = async (source, destination) => {
+	try {
+		await fs.access(source);
+	} catch {
+		return;
+	}
+
+	let content = await fs.readFile(source, 'utf-8');
+
+	// Remove /src from theme references in HTML files
+	content = content.replace(
+		/"theme":"trydo-wp-theme-bolierplate\/src"/g,
+		'"theme":"trydo-wp-theme-bolierplate"'
+	);
+
+	await fs.writeFile(destination, content, 'utf-8');
+};
+
 async function main() {
 	log('Building Vite assets...');
 	run('pnpm build');
@@ -65,23 +83,26 @@ async function main() {
 	await fs.mkdir(themeOutputDir, { recursive: true });
 
 	const themeSrcRoot = path.join(projectRoot, 'src');
-	const themeDirectories = ['blocks', 'inc', 'parts', 'resources', 'templates'];
-	const themeFiles = [
-		'functions.php',
-		'style.css',
-		'theme.json',
-		'screenshot.png',
-		'templates/index.html',
-	];
+	const themeDirectories = ['blocks', 'inc', 'parts', 'resources'];
+	const themeFiles = ['functions.php', 'style.css', 'theme.json', 'screenshot.png'];
+	const htmlFiles = ['templates/index.html'];
 
 	log('Copying theme directories...');
 	for (const dir of themeDirectories) {
 		await copyIfExists(path.join(themeSrcRoot, dir), path.join(themeOutputDir, dir));
 	}
 
+	log('Copying templates directory...');
+	await fs.mkdir(path.join(themeOutputDir, 'templates'), { recursive: true });
+
 	log('Copying theme files...');
 	for (const file of themeFiles) {
 		await copyFileIfExists(path.join(themeSrcRoot, file), path.join(themeOutputDir, file));
+	}
+
+	log('Processing HTML template files...');
+	for (const file of htmlFiles) {
+		await processHtmlFile(path.join(themeSrcRoot, file), path.join(themeOutputDir, file));
 	}
 
 	log('Copying dist assets...');

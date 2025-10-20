@@ -806,7 +806,49 @@ pnpm lint:js           # Roda apenas ESLint
 pnpm lint:css          # Roda apenas Stylelint
 pnpm format            # Formata todos os arquivos
 pnpm format:check      # Verifica se arquivos estão formatados
+
+# Production
+pnpm production        # Gera bundle de produção (ZIP)
 ```
+
+### Production Build Process
+
+O comando `pnpm production` executa o script `scripts/build-production.js` que:
+
+1. **Roda `pnpm build`**: Compila assets do Vite para `/dist`
+2. **Prepara estrutura limpa**: Cria `production/trydo-wp-theme-bolierplate/`
+3. **Copia diretórios do tema**: `blocks/`, `inc/`, `parts/`, `resources/` de `src/` para a raiz
+4. **Copia arquivos essenciais**: `functions.php`, `style.css`, `theme.json`, `screenshot.png`
+5. **Processa templates HTML**: Remove referências a `/src` nos arquivos `.html` (função `processHtmlFile()`)
+6. **Copia assets compilados**: `/dist` e `README.md`
+7. **Gera ZIP**: `production/trydo-wp-theme-bolierplate.zip` pronto para upload
+
+**Estrutura de saída:**
+
+```
+production/
+└── trydo-wp-theme-bolierplate/
+    ├── blocks/           # Blocos customizados
+    ├── dist/             # Assets compilados (Vite)
+    ├── inc/              # Helpers PHP
+    ├── parts/            # Template parts
+    ├── resources/        # Scripts/estilos/fontes/imagens
+    ├── templates/        # Templates FSE (HTML processado)
+    ├── functions.php
+    ├── style.css
+    ├── theme.json
+    ├── screenshot.png
+    └── README.md
+```
+
+**Diferenças dev vs produção:**
+
+| Aspecto                   | Desenvolvimento (`src/`)        | Produção (raiz)                  |
+| ------------------------- | ------------------------------- | -------------------------------- |
+| Estrutura                 | `src/blocks/`, `src/inc/`, etc  | `blocks/`, `inc/` na raiz        |
+| Templates                 | `theme="slug/src"`              | `theme="slug"` (processado)      |
+| Detecção PHP              | `is_dir($root . '/src')` → true | `is_dir($root . '/src')` → false |
+| Função `theme_src_path()` | Retorna `<root>/src`            | Retorna `<root>`                 |
 
 ### Boas Práticas
 
@@ -838,6 +880,7 @@ pnpm format:check      # Verifica se arquivos estão formatados
 - **Sync de estilos do editor (Novembro 2024):** Reescrevemos `src/resources/scripts/editor.js` para espelhar estilos do Vite (Tailwind + fonts + Phosphor) dentro do iframe do editor durante o HMR. Problema: ao reidratar o Site Editor em modo dev, o WordPress reconstruía o `<head>` do iframe e removia as folhas do Tailwind, quebrando tipografia e ícones. Solução: catalogar `<style>`/`<link>` com `data-vite-dev-id` ou URLs do dev server, clonar para o iframe com prioridade, monitorar mutações futuras e carregar os bundles de ícones diretamente no entry do editor. Resultado: blocos mantêm fontes e ícones após reidratação sem exigir refresh manual.
 - **Production bundle automation (Novembro 2024):** Adicionado `pnpm production`, script que roda o build do Vite, copia `src`, `dist`, `vendor` e arquivos Composer para `production/<slug>/` e gera um ZIP pronto para upload no WordPress. Mantém o pacote enxuto (sem `node_modules`) e garante que o `dist/manifest.json` acompanha o tema.
 - **Nav bar pin com ScrollSmoother (Novembro 2024):** Criado script dedicado `src/resources/scripts/nav-bar-pin.js` que usa GSAP + ScrollTrigger para ocultar/exibir suavemente a barra de navegação ao rolar, escopo único por página e dependente do ScrollSmoother global. Mantivemos separado do `view.js` para evitar múltiplas instâncias quando existem vários blocos e para garantir ordem de carregamento com o smoother.
+- **Production-ready theme structure (Outubro 2024):** Refatorado sistema de detecção de ambiente e script de build para suportar pacotes de produção limpos sem pasta `src/`. Problema: No desenvolvimento, arquivos ficam em `src/blocks/`, `src/inc/`, etc, mas o pacote de produção deve ter estrutura flat (`blocks/`, `inc/` na raiz do tema) para manter o ZIP enxuto. Blocos customizados não renderizavam no front-end e template parts (header/footer) não eram reconhecidos no WordPress após upload do tema. Causa: `trydo_wp_theme_bolierplate_theme_src_path()` retornava sempre `<theme-root>/src`, mas essa pasta não existe no bundle; `templates/index.html` tinha referências hardcoded a `theme="trydo-wp-theme-bolierplate/src"`. Solução dupla: (1) `src/inc/vite.php` agora detecta automaticamente o ambiente via `is_dir($src_path)` - se `/src` existe retorna ela (dev), senão retorna raiz (prod); (2) `scripts/build-production.js` ganhou função `processHtmlFile()` que faz find-replace automático em templates HTML durante o empacotamento, removendo `/src` das referências ao tema. Resultado: desenvolvimento permanece inalterado, produção funciona perfeitamente com estrutura flat, blocos e template parts renderizam corretamente em ambos os ambientes.
 
 > When you land a change that affects the build process, architecture, or conventions, append a new bullet here with the date, summary, and rationale.
 

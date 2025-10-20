@@ -16,10 +16,17 @@ function trydo_wp_theme_bolierplate_theme_project_root_path(): string
 
 /**
  * Resolves the absolute path to the active theme source directory.
+ *
+ * In development: points to /src directory
+ * In production: points to theme root (no /src directory in production bundle)
  */
 function trydo_wp_theme_bolierplate_theme_src_path(): string
 {
-	return trydo_wp_theme_bolierplate_theme_project_root_path() . '/src';
+	$root = trydo_wp_theme_bolierplate_theme_project_root_path();
+	$src_path = $root . '/src';
+
+	// If /src exists (development), use it. Otherwise, use root (production)
+	return is_dir($src_path) ? $src_path : $root;
 }
 
 /**
