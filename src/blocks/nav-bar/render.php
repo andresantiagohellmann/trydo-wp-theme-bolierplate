@@ -16,7 +16,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
 ob_start();
 ?>
 <header <?php echo $wrapper_attributes; ?> data-nav-bar="wrapper">
-    <div class="the-container grid grid-cols-[auto_1fr] gap-8 bg-red-500 main-px items-center">
+    <div class="the-container grid grid-cols-[auto_1fr] gap-8 bg-red-500 main-px items-center dark:bg-black/60">
         <div class="brand">logo</div>
         <nav class="nav flex justify-end relative">
             <div class="nav-buttons lg:hidden flex gap-2">

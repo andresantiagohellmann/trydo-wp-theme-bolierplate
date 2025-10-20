@@ -4,7 +4,16 @@
     "at-rule-no-unknown": [
       true,
       {
-        "ignoreAtRules": ["tailwind", "apply", "layer", "config", "import", "reference", "theme"]
+        "ignoreAtRules": [
+          "tailwind",
+          "apply",
+          "layer",
+          "config",
+          "import",
+          "reference",
+          "theme",
+          "variant"
+        ]
       }
     ],
     "function-no-unknown": [
@@ -18,7 +27,8 @@
     "custom-property-pattern": null,
     "no-descending-specificity": null,
     "declaration-block-no-redundant-longhand-properties": null,
-    "media-feature-range-notation": "prefix"
+    "media-feature-range-notation": "prefix",
+    "no-invalid-position-at-import-rule": null
   },
   "ignoreFiles": ["dist/**", "node_modules/**"]
 }

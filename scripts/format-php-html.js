@@ -10,14 +10,14 @@ import { glob } from 'glob';
 import prettier from 'prettier';
 
 async function formatPhpHtml(filePath) {
-	let content = fs.readFileSync(filePath, 'utf8');
+	const content = fs.readFileSync(filePath, 'utf8');
 	let modified = false;
 
 	// Split by PHP tags to separate PHP and HTML sections
 	const parts = content.split(/(<\?php[\s\S]*?\?>|<\?=[\s\S]*?\?>)/);
 
 	const formatted = await Promise.all(
-		parts.map(async (part, index) => {
+		parts.map(async (part) => {
 			// Skip PHP sections (odd indexes after split)
 			if (part.startsWith('<?php') || part.startsWith('<?=')) {
 				return part;
@@ -44,7 +44,7 @@ async function formatPhpHtml(filePath) {
 					});
 					html = formatted.trim() + '\n';
 					modified = true;
-				} catch (e) {
+				} catch {
 					// If prettier fails, fall back to manual formatting
 					console.warn(`Prettier failed for HTML section, using manual formatting`);
 					html = manualFormatHtml(html);
@@ -61,6 +61,7 @@ async function formatPhpHtml(filePath) {
 
 	if (modified || result !== content) {
 		fs.writeFileSync(filePath, result, 'utf8');
+		// eslint-disable-next-line no-console
 		console.log(`✓ Formatted: ${filePath}`);
 		return true;
 	}
@@ -88,6 +89,7 @@ async function main() {
 	const args = process.argv.slice(2);
 	const pattern = args[0] || 'src/**/*.php';
 
+	// eslint-disable-next-line no-console
 	console.log(`Formatting PHP files matching: ${pattern}\n`);
 
 	const files = await glob(pattern, {
@@ -101,6 +103,7 @@ async function main() {
 		}
 	}
 
+	// eslint-disable-next-line no-console
 	console.log(`\n${formatted} file(s) formatted`);
 }
 

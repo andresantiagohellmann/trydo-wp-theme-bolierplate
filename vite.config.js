@@ -52,6 +52,7 @@ function watchBlockScriptsPlugin() {
 					file.includes('/blocks/') &&
 					(file.endsWith('/interactive.js') || file.endsWith('/view.js'))
 				) {
+					// eslint-disable-next-line no-console
 					console.log(
 						`[HMR] Block script changed: ${path.basename(path.dirname(file))}/${path.basename(file)}`
 					);

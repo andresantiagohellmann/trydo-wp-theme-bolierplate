@@ -149,6 +149,110 @@
 	};
 
 	/**
+	 * Handle theme toggle with sunset/moonrise animation
+	 * @param {object} gsap - GSAP instance
+	 * @param {NodeList} themeButtons - The theme toggle buttons
+	 */
+	const handleThemeToggle = (gsap, themeButtons) => {
+		const sunButton = themeButtons[0];
+		const moonButton = themeButtons[1];
+		const sunIcon = sunButton.querySelector('i');
+		const moonIcon = moonButton.querySelector('i');
+
+		// Check if dark mode is already enabled (from system preference or localStorage)
+		const isDark =
+			localStorage.getItem('theme') === 'dark' ||
+			(!localStorage.getItem('theme') &&
+				window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+		// Set initial state
+		if (isDark) {
+			document.documentElement.classList.add('dark');
+			sunButton.parentElement.classList.add('hidden');
+			moonButton.parentElement.classList.remove('hidden');
+		}
+
+		/**
+		 * Toggle theme with animation
+		 */
+		const toggleTheme = () => {
+			const isDarkNow = document.documentElement.classList.contains('dark');
+
+			if (isDarkNow) {
+				// Switch to light mode - sunrise animation
+				const tl = gsap.timeline({
+					onComplete: () => {
+						document.documentElement.classList.remove('dark');
+						localStorage.setItem('theme', 'light');
+					},
+				});
+
+				// Moon sets (moves down and fades)
+				tl.to(moonIcon, {
+					duration: 0.4,
+					y: 20,
+					opacity: 0,
+					rotation: -180,
+					ease: 'power2.in',
+				});
+
+				// Switch buttons
+				tl.call(() => {
+					moonButton.parentElement.classList.add('hidden');
+					sunButton.parentElement.classList.remove('hidden');
+					gsap.set(sunIcon, { y: -20, opacity: 0, rotation: 180 });
+				});
+
+				// Sun rises (moves up and appears)
+				tl.to(sunIcon, {
+					duration: 0.4,
+					y: 0,
+					opacity: 1,
+					rotation: 0,
+					ease: 'power2.out',
+				});
+			} else {
+				// Switch to dark mode - sunset animation
+				const tl = gsap.timeline({
+					onComplete: () => {
+						document.documentElement.classList.add('dark');
+						localStorage.setItem('theme', 'dark');
+					},
+				});
+
+				// Sun sets (moves down and fades)
+				tl.to(sunIcon, {
+					duration: 0.4,
+					y: 20,
+					opacity: 0,
+					rotation: 180,
+					ease: 'power2.in',
+				});
+
+				// Switch buttons
+				tl.call(() => {
+					sunButton.parentElement.classList.add('hidden');
+					moonButton.parentElement.classList.remove('hidden');
+					gsap.set(moonIcon, { y: -20, opacity: 0, rotation: -180 });
+				});
+
+				// Moon rises (moves up and appears)
+				tl.to(moonIcon, {
+					duration: 0.4,
+					y: 0,
+					opacity: 1,
+					rotation: 0,
+					ease: 'power2.out',
+				});
+			}
+		};
+
+		// Add click listeners
+		sunButton.addEventListener('click', toggleTheme);
+		moonButton.addEventListener('click', toggleTheme);
+	};
+
+	/**
 	 * Initialize interactive block
 	 */
 	const initInteractiveBlock = () => {
@@ -162,10 +266,11 @@
 		const navBar = document.querySelector('[data-nav-bar="wrapper"]');
 		const navButton = navBar.querySelector('[data-nav-bar="nav-button"]');
 		const navContainer = navBar.querySelector('[data-nav-bar="nav-container"]');
-
 		const navContent = navBar.querySelector('[data-nav-bar="nav-content"]');
+		const themeButtons = navBar.querySelectorAll('.theme-toggle-item button');
 
 		handleMenuToggle(gsap, navButton, navContainer, navContent);
+		handleThemeToggle(gsap, themeButtons);
 	};
 
 	// Initialize on DOM ready

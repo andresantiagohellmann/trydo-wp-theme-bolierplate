@@ -5,6 +5,8 @@
 	--breakpoint-xl: 1320px;
 }
 
+@variant dark (&:is(.dark *));
+
 /* ========================================
    Custom Styles - Modular Imports
    ======================================== */
