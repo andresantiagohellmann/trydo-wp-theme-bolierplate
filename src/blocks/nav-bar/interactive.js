@@ -12,14 +12,30 @@
 		const svgRects = navButton.querySelectorAll('rect');
 		const topRect = svgRects[0];
 		const bottomRect = svgRects[1];
+		const BREAKPOINT = 1170;
 
-		// Set initial state (menu closed)
-		gsap.set(navContent, { opacity: 0 });
-		gsap.set(navContainer, {
-			scale: 0.1,
-			borderRadius: '120px',
-			transformOrigin: 'top right',
-		});
+		// Set initial state based on window size
+		const isDesktop = window.innerWidth >= BREAKPOINT;
+
+		if (isDesktop) {
+			// Desktop: menu always open
+			gsap.set(navContent, { opacity: 1 });
+			gsap.set(navContainer, {
+				scale: 1,
+				borderRadius: '16px',
+				opacity: 1,
+				transformOrigin: 'top right',
+			});
+		} else {
+			// Mobile: menu closed
+			gsap.set(navContent, { opacity: 0 });
+			gsap.set(navContainer, {
+				scale: 0.1,
+				borderRadius: '120px',
+				opacity: 0,
+				transformOrigin: 'top right',
+			});
+		}
 
 		const tl = gsap.timeline({ paused: true, reversed: true });
 
@@ -50,6 +66,7 @@
 				duration: 0.5,
 				scale: 1,
 				borderRadius: '16px',
+				opacity: 1,
 				transformOrigin: 'top right',
 				ease: 'power2.out',
 			},
@@ -66,8 +83,68 @@
 			'-=0.3'
 		);
 
+		// Handle button click
 		navButton.addEventListener('click', () => {
-			tl.reversed() ? tl.play() : tl.reverse();
+			// Only allow toggle on mobile
+			if (window.innerWidth < BREAKPOINT) {
+				tl.reversed() ? tl.play() : tl.reverse();
+			}
+		});
+
+		// Handle window resize
+		let wasDesktop = isDesktop;
+		window.addEventListener('resize', () => {
+			const isNowDesktop = window.innerWidth >= BREAKPOINT;
+
+			if (isNowDesktop && !wasDesktop) {
+				// Changed from mobile to desktop: open menu
+				gsap.to(navContent, { opacity: 1, duration: 0.3 });
+				gsap.to(navContainer, {
+					scale: 1,
+					borderRadius: '16px',
+					opacity: 1,
+					duration: 0.3,
+				});
+				// Reset icon to hamburger (lines)
+				gsap.to(topRect, {
+					duration: 0.3,
+					attr: { y: 0 },
+					rotation: 0,
+					transformOrigin: 'center',
+				});
+				gsap.to(bottomRect, {
+					duration: 0.3,
+					attr: { y: 6 },
+					rotation: 0,
+					transformOrigin: 'center',
+				});
+				tl.pause().reversed(true);
+			} else if (!isNowDesktop && wasDesktop) {
+				// Changed from desktop to mobile: close menu
+				gsap.to(navContent, { opacity: 0, duration: 0.3 });
+				gsap.to(navContainer, {
+					scale: 0.1,
+					borderRadius: '120px',
+					opacity: 0,
+					duration: 0.3,
+				});
+				// Reset icon to hamburger (lines)
+				gsap.to(topRect, {
+					duration: 0.3,
+					attr: { y: 0 },
+					rotation: 0,
+					transformOrigin: 'center',
+				});
+				gsap.to(bottomRect, {
+					duration: 0.3,
+					attr: { y: 6 },
+					rotation: 0,
+					transformOrigin: 'center',
+				});
+				tl.pause().reversed(true);
+			}
+
+			wasDesktop = isNowDesktop;
 		});
 	};
 
