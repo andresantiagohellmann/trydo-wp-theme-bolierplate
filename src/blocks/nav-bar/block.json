@@ -15,7 +15,101 @@
       "padding": false
     }
   },
-  "attributes": {},
+  "attributes": {
+    "logoId": {
+      "type": "number",
+      "default": 0
+    },
+    "logoUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "logoAlt": {
+      "type": "string",
+      "default": "Logo"
+    },
+    "logoHeightMobile": {
+      "type": "number",
+      "default": 24
+    },
+    "logoHeightSm": {
+      "type": "number",
+      "default": 28
+    },
+    "logoHeightMd": {
+      "type": "number",
+      "default": 32
+    },
+    "logoHeightLg": {
+      "type": "number",
+      "default": 36
+    },
+    "logoHeightXl": {
+      "type": "number",
+      "default": 40
+    },
+    "logoHeight2xl": {
+      "type": "number",
+      "default": 48
+    },
+    "menuItems": {
+      "type": "array",
+      "default": [
+        { "label": "Home", "isBold": true },
+        { "label": "Sobre", "isBold": false },
+        { "label": "Serviços", "isBold": false },
+        { "label": "Contato", "isBold": false }
+      ]
+    },
+    "showLanguageToggle": {
+      "type": "boolean",
+      "default": true
+    },
+    "showThemeToggle": {
+      "type": "boolean",
+      "default": true
+    },
+    "showWhatsappButton": {
+      "type": "boolean",
+      "default": true
+    },
+    "whatsappUrl": {
+      "type": "string",
+      "default": "http://google.com"
+    },
+    "whatsappText": {
+      "type": "string",
+      "default": "Diga olá"
+    },
+    "whatsappTarget": {
+      "type": "boolean",
+      "default": true
+    },
+    "showInstagramButton": {
+      "type": "boolean",
+      "default": true
+    },
+    "instagramUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "instagramTarget": {
+      "type": "boolean",
+      "default": true
+    },
+    "showEmailButton": {
+      "type": "boolean",
+      "default": true
+    },
+    "emailUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "emailTarget": {
+      "type": "boolean",
+      "default": false
+    }
+  },
   "render": "file:./render.php",
   "script": "file:./interactive.js"
 }

@@ -1,13 +1,141 @@
 @reference "../../resources/styles/main.css";
 
-.wp-block-trydo-wp-theme-bolierplate-nav-bar {
-	@apply mt-4 bg-white;
+/* Container */
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__the-container {
+	@apply grid grid-cols-[auto_1fr] items-center gap-8 py-12;
 }
 
-.wp-block-trydo-wp-theme-bolierplate-nav-bar .nav-bar__logo {
-	@apply flex items-center;
+/* Brand */
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__brand {
+	@apply w-auto;
+
+	height: var(--logo-height-mobile, 24px);
 }
 
-.wp-block-trydo-wp-theme-bolierplate-nav-bar .nav-bar__menu {
-	@apply flex items-center justify-end;
+@media (min-width: 640px) {
+	.wp-block-trydo-wp-theme-bolierplate-nav-bar__brand {
+		height: var(--logo-height-sm, 28px);
+	}
+}
+
+@media (min-width: 768px) {
+	.wp-block-trydo-wp-theme-bolierplate-nav-bar__brand {
+		height: var(--logo-height-md, 32px);
+	}
+}
+
+@media (min-width: 1024px) {
+	.wp-block-trydo-wp-theme-bolierplate-nav-bar__brand {
+		height: var(--logo-height-lg, 36px);
+	}
+}
+
+@media (min-width: 1280px) {
+	.wp-block-trydo-wp-theme-bolierplate-nav-bar__brand {
+		height: var(--logo-height-xl, 40px);
+	}
+}
+
+@media (min-width: 1536px) {
+	.wp-block-trydo-wp-theme-bolierplate-nav-bar__brand {
+		height: var(--logo-height-2xl, 48px);
+	}
+}
+
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__brand-image {
+	@apply h-full w-auto;
+}
+
+/* Nav */
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__nav {
+	@apply relative flex justify-end;
+}
+
+/* Nav Buttons (mobile only) */
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__nav-buttons {
+	@apply flex gap-2 lg:hidden;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__nav-whatsapp-mobile {
+	@apply bg-success-light font-emphasis text-success-bold flex h-10 w-12 items-center justify-center gap-2 rounded-xl p-2 text-sm italic !no-underline;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__nav-whatsapp-mobile-icon {
+	@apply text-xl;
+}
+
+/* Nav Button (hamburger) */
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__nav-button {
+	@apply bg-light dark:bg-dark dark:text-light relative z-60 flex h-10 w-12 cursor-pointer items-center justify-center rounded-xl;
+}
+
+/* Nav Container */
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__nav-container {
+	@apply bg-light dark:bg-dark dark:text-light absolute z-50 flex min-w-72 flex-col rounded-2xl px-4 pt-14 pb-4 lg:relative lg:flex-row lg:bg-transparent lg:p-0;
+}
+
+/* Nav Content */
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__nav-content {
+	@apply lg:text-light flex flex-col rounded-xl bg-black/5 p-4 lg:flex-row lg:gap-8 lg:bg-black/5 lg:p-2 lg:pl-8 lg:backdrop-blur-2xl dark:bg-white/5;
+}
+
+/* Menu */
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__menu {
+	@apply order-2 flex flex-col gap-2 lg:order-1 lg:flex-row lg:items-center lg:gap-6;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__menu-item {
+	@apply hover:text-primary-thin cursor-pointer transition;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__menu-item--bold {
+	@apply font-bold;
+}
+
+/* Nav Tools */
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__nav-tools {
+	@apply order-1 mb-6 flex items-center justify-between lg:order-2 lg:mb-0 lg:gap-4;
+}
+
+/* Language Toggle */
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__i18n {
+	@apply bg-light dark:bg-dark flex gap-2 rounded-lg p-2 text-sm lg:bg-transparent lg:p-0 dark:lg:bg-transparent;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__i18n-item {
+	@apply hover:text-primary-thin cursor-pointer rounded bg-black/0 px-2 py-1 transition;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__i18n-item--active {
+	@apply hover:text-primary-thin cursor-pointer rounded bg-black/5 px-2 py-1 font-bold transition lg:bg-transparent dark:bg-white/5 lg:dark:bg-transparent;
+}
+
+/* Theme Toggle */
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__theme-toggle {
+	@apply flex items-center justify-center text-xl;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__theme-toggle-button {
+	@apply hover:text-primary-thin flex cursor-pointer items-center justify-center transition;
+}
+
+/* Nav Contact */
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__nav-contact {
+	@apply order-3 mt-6 flex justify-around gap-2 lg:mt-0;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__nav-contact-link {
+	@apply bg-light dark:bg-dark flex items-center justify-center rounded-lg p-3 text-xl !no-underline lg:hidden;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__nav-whatsapp {
+	@apply bg-success-light font-emphasis text-success-bold hover:bg-success-bold hover:text-success-regular flex w-full items-center justify-center gap-2 rounded-lg p-2 text-sm italic !no-underline transition lg:px-3;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__whatsapp-text {
+	@apply lg:hidden;
+}
+
+.wp-block-trydo-wp-theme-bolierplate-nav-bar__whatsapp-icon {
+	@apply text-xl;
 }

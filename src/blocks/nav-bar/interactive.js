@@ -23,7 +23,6 @@
 			gsap.set(navContainer, {
 				scale: 1,
 				borderRadius: '16px',
-				opacity: 1,
 				transformOrigin: 'top right',
 			});
 		} else {
@@ -32,7 +31,6 @@
 			gsap.set(navContainer, {
 				scale: 0.1,
 				borderRadius: '120px',
-				opacity: 0,
 				transformOrigin: 'top right',
 			});
 		}
@@ -66,7 +64,6 @@
 				duration: 0.5,
 				scale: 1,
 				borderRadius: '16px',
-				opacity: 1,
 				transformOrigin: 'top right',
 				ease: 'power2.out',
 			},
@@ -102,7 +99,6 @@
 				gsap.to(navContainer, {
 					scale: 1,
 					borderRadius: '16px',
-					opacity: 1,
 					duration: 0.3,
 				});
 				// Reset icon to hamburger (lines)
@@ -267,10 +263,15 @@
 		const navButton = navBar.querySelector('[data-nav-bar="nav-button"]');
 		const navContainer = navBar.querySelector('[data-nav-bar="nav-container"]');
 		const navContent = navBar.querySelector('[data-nav-bar="nav-content"]');
-		const themeButtons = navBar.querySelectorAll('.theme-toggle-item button');
+		const themeButtons = navBar.querySelectorAll(
+			'.wp-block-trydo-wp-theme-bolierplate-nav-bar__theme-toggle-item button'
+		);
 
 		handleMenuToggle(gsap, navButton, navContainer, navContent);
-		handleThemeToggle(gsap, themeButtons);
+
+		if (themeButtons.length > 0) {
+			handleThemeToggle(gsap, themeButtons);
+		}
 	};
 
 	// Initialize on DOM ready
